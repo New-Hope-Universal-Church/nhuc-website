@@ -42,3 +42,8 @@ next-env.d.ts
 
 # local tooling
 /.claude
+
+# from the GitHub template
+.pnp.js
+.env*.local
+.env
