@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/*
+ * New Hope Universal Church: colours from the logo and the church's stream
+ * graphics. Green is the church's colour, gold frames and calls to action,
+ * crimson marks labels and accents, and kente ties it to Ghanaian culture.
+ */
+@theme {
+  --color-brand-50: #eef8f1;
+  --color-brand-100: #d6eedd;
+  --color-brand-200: #addcbc;
+  --color-brand-300: #7dc495;
+  --color-brand-400: #4ca86c;
+  --color-brand-500: #2a8d4d;
+  --color-brand-600: #1c7a3e;
+  --color-brand-700: #176233;
+  --color-brand-800: #144e2a;
+  --color-brand-900: #0d3a20;
+  --color-brand-950: #062214;
+
+  --color-gold-50: #fdf8e8;
+  --color-gold-100: #faedc4;
+  --color-gold-200: #f5dc8a;
+  --color-gold-300: #f0cb55;
+  --color-gold-400: #e9b730;
+  --color-gold-500: #d79c1c;
+  --color-gold-600: #b77d15;
+  --color-gold-700: #925e14;
+  --color-gold-800: #794c17;
+  --color-gold-900: #673f18;
+
+  --color-crimson-50: #fdf2f3;
+  --color-crimson-100: #fbe4e6;
+  --color-crimson-400: #e0586a;
+  --color-crimson-500: #cc3b4b;
+  --color-crimson-600: #c8202f;
+  --color-crimson-700: #a8172a;
+  --color-crimson-800: #861426;
+  --color-crimson-900: #661422;
+
+  --color-cream: #faf6ec;
+  --color-ivory: #fff9ea;
+  --color-ink: #13201a;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Spaced capitals for labels, tags and buttons, as on the stream graphics,
+     and for Twi: Montserrat has ɛ and ɔ (Poppins and Fraunces do not). */
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  /* Headings: elegant serif, normal capitalisation. Not for Twi text. */
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-serif: var(--font-merriweather), ui-serif, Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+/* Keyboard focus is always visible; mouse clicks don't leave a ring. */
+:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 3px;
+}
+
+/* The deep green of the stream graphics: a soft light top right and a warm
+   crimson glow in the bottom-left corner. */
+@utility bg-church {
+  background-color: var(--color-brand-950);
+  background-image:
+    radial-gradient(60% 70% at 72% 30%, rgb(28 122 62 / 0.55), transparent 70%),
+    radial-gradient(45% 55% at 0% 100%, rgb(168 23 42 / 0.35), transparent 70%),
+    linear-gradient(180deg, #072a17 0%, #041a0e 100%);
+}
+
+/* A kente strip: two staggered rows of crimson, gold, green and black. */
+@utility kente {
+  height: 0.75rem;
+  background-image:
+    repeating-linear-gradient(90deg,
+      #c8202f 0 14px, #e9b730 14px 30px, #1c7a3e 30px 40px, #e9b730 40px 50px,
+      #111 50px 56px, #e9b730 56px 70px, #c8202f 70px 84px, #1c7a3e 84px 92px),
+    repeating-linear-gradient(90deg,
+      #e9b730 0 10px, #1c7a3e 10px 22px, #c8202f 22px 36px, #111 36px 42px,
+      #e9b730 42px 58px, #c8202f 58px 66px, #1c7a3e 66px 80px, #e9b730 80px 92px);
+  background-size: 100% 50%, 100% 50%;
+  background-position: top, bottom;
+  background-repeat: repeat-x;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
