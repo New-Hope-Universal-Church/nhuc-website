@@ -31,6 +31,7 @@ export default async function SiteFooter() {
               {nav.map((item) => (
                 <li key={item.href}><Link href={item.href} className="text-white/70 hover:text-white">{item.label}</Link></li>
               ))}
+              <li><Link href="/counselling" className="text-white/70 hover:text-white">Book counselling</Link></li>
               <li><Link href="/give" className="text-white/70 hover:text-white">Give</Link></li>
             </ul>
           </div>

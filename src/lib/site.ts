@@ -23,7 +23,7 @@ export const site = {
     { twi: 'Abusua kentinka', english: 'A great family' },
     { twi: 'Yɛ de Nyame dɔ bɛ tina daa', english: 'We will live together in the love of God, always' },
   ],
-  url: 'https://newhopeuniversalchurch.org',
+  url: 'https://www.newhopeuniversalchurch.org',
 
   address: {
     line1: 'Otojor, Dansoman',
