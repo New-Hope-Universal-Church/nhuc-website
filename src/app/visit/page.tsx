@@ -25,7 +25,7 @@ export default async function VisitPage() {
       <section className="py-24 sm:py-32">
         <Container className="grid gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
           <SectionHeading kicker="When" title="Service times" intro="Arrive a few minutes early so we can welcome you properly." />
-          <ServiceTimes items={schedule} />
+          {schedule.length ? <ServiceTimes items={schedule} /> : <p className="self-center text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
         </Container>
       </section>
 

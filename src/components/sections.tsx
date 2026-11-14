@@ -37,7 +37,7 @@ export function ServiceTimes({ items, light = false }: { items: ScheduleItem[]; 
           <span>
             <span className={`block font-heading text-xl font-semibold ${light ? 'text-ivory' : 'text-brand-950'}`}>{s.name}</span>
             <span className={`block text-sm ${light ? 'text-white/55' : 'text-ink/55'}`}>
-              {s.when}{s.note ? ` · ${s.note}` : ''}
+              {s.when}{s.endTime ? `, until ${s.endTime}` : ''}
             </span>
           </span>
           <span className={`col-start-2 sm:col-start-3 font-display text-base font-bold tabular-nums ${light ? 'text-gold-300' : 'text-gold-700'}`}>{s.time}</span>
@@ -66,6 +66,15 @@ export function EventCard({ event }: { event: UpcomingEvent }) {
       <div className="flex-1 p-6">
         <h3 className="font-heading text-xl font-semibold leading-tight tracking-tight text-brand-950">{event.title}</h3>
         {event.location && <p className="mt-1 text-sm text-ink/55">{event.location}</p>}
+        {event.sessions.length > 1 && (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {event.sessions.map((s) => (
+              <li key={s.name} className="rounded-sm bg-cream px-2.5 py-1 text-xs text-ink/70">
+                <span className="font-semibold text-brand-950">{s.name}</span> · {fmtTime(s.startDate)}
+              </li>
+            ))}
+          </ul>
+        )}
         {event.description && <p className="mt-4 text-sm leading-relaxed text-ink/70">{event.description}</p>}
       </div>
     </article>

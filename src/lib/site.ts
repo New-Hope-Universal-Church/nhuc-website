@@ -54,6 +54,7 @@ export const site = {
 } as const;
 
 export const nav = [
+  { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/visit', label: 'Visit' },
   { href: '/hope', label: 'Hope for Today' },

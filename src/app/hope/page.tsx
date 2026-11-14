@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { excerpt, getDevotionals } from '@/lib/hopeserve';
-import { fmtDay, dateTile } from '@/lib/format';
+import { fmtDay, dateTile, todayInGhana } from '@/lib/format';
 import { site } from '@/lib/site';
 import { ArrowRight, ButtonLink, Container, Kente, Kicker, Scripture } from '@/components/ui';
 import { PageHero } from '@/components/sections';
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HopePage() {
-  const [today, ...earlier] = await getDevotionals(30);
+  const [[today, ...earlier], todayDate] = await Promise.all([getDevotionals(30), todayInGhana()]);
 
   return (
     <>
@@ -23,6 +23,12 @@ export default async function HopePage() {
         shot="Open Bible on the pulpit"
       />
 
+      {!today && (
+        <section className="py-24">
+          <Container><p className="text-lg text-ink/60">Today&apos;s devotional will appear here soon.</p></Container>
+        </section>
+      )}
+
       {today && (
         <section className="py-20 sm:py-28">
           <Container>
@@ -30,12 +36,12 @@ export default async function HopePage() {
               <Kente />
               <div className="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
                 <div>
-                  <Kicker>Today</Kicker>
+                  <Kicker>{today.date === todayDate ? 'Today' : 'Latest'}</Kicker>
                   <p className="mt-4 text-sm text-ink/55">{fmtDay(`${today.date}T12:00:00Z`)}</p>
                   <h2 className="mt-2 font-heading text-4xl font-semibold leading-tight tracking-tight text-brand-950 sm:text-5xl">{today.title}</h2>
                   {today.scripture && <p className="mt-3 font-display text-[13px] font-bold uppercase tracking-[0.16em] text-crimson-700">{today.scripture}</p>}
                   <p className="mt-6 text-lg leading-relaxed text-ink/75">{excerpt(today, 260)}</p>
-                  <div className="mt-8"><ButtonLink href={`/hope/${today.date}`} variant="dark">Read today&apos;s devotional <ArrowRight /></ButtonLink></div>
+                  <div className="mt-8"><ButtonLink href={`/hope/${today.date}`} variant="dark">{today.date === todayDate ? 'Read today’s devotional' : 'Read the devotional'} <ArrowRight /></ButtonLink></div>
                 </div>
                 {today.passage && (
                   <blockquote className="self-center border-l-4 border-gold-400 pl-6">
