@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { excerpt, getLatestDevotional, getLatestSermons, getSchedule, getUpcomingEvents } from '@/lib/hopeserve';
-import { fmtDay, fmtShortDate, fmtTime } from '@/lib/format';
+import { excerpt, getLatestDevotional, getLatestSermons, getSchedule, getUpcomingEvents, scriptureLine } from '@/lib/hopeserve';
+import { fmtDay, fmtShortDate, fmtTime, todayInGhana } from '@/lib/format';
 import { site } from '@/lib/site';
 import { ArrowRight, ButtonLink, Container, Kente, Kicker, Photo, Scripture, SectionHeading } from '@/components/ui';
 import { AnchorVerse, CallAndResponse, EventCard, MoreLink, ServiceTimes } from '@/components/sections';
@@ -15,11 +15,12 @@ const PATHWAYS = [
 const MINISTRIES = ['Music', 'Youth', 'Prayer Warriors', 'Ushering', 'Media', "Women's Fellowship", 'Lay Readers', 'Visitation & Hospitality'];
 
 export default async function HomePage() {
-  const [schedule, events, sermons, devotional] = await Promise.all([
+  const [schedule, events, sermons, devotional, today] = await Promise.all([
     getSchedule(),
     getUpcomingEvents(3),
     getLatestSermons(3),
     getLatestDevotional(),
+    todayInGhana(),
   ]);
   const next = events[0];
 
@@ -101,7 +102,7 @@ export default async function HomePage() {
               <ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="outline-dark">Get directions</ButtonLink>
             </div>
           </div>
-          <ServiceTimes items={schedule} />
+          {schedule.length ? <ServiceTimes items={schedule} /> : <p className="self-center text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
         </Container>
       </section>
 
@@ -135,10 +136,10 @@ export default async function HomePage() {
                 <Kicker>Hope for Today</Kicker>
                 <p className="mt-4 text-sm text-ink/50">{fmtDay(`${devotional.date}T12:00:00Z`)}</p>
                 <h2 className="mt-3 font-heading text-3xl font-semibold leading-tight tracking-tight text-brand-950">{devotional.title}</h2>
-                <Scripture className="mt-2 font-semibold !text-crimson-700">{devotional.scripture}</Scripture>
+                {devotional.scripture && <Scripture className="mt-2 font-semibold !text-crimson-700">{devotional.scripture}</Scripture>}
                 <p className="mt-6 text-lg leading-relaxed text-ink/75">{excerpt(devotional)}</p>
                 <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                  <ButtonLink href={`/hope/${devotional.date}`} variant="dark">Read today&apos;s devotional</ButtonLink>
+                  <ButtonLink href={`/hope/${devotional.date}`} variant="dark">{devotional.date === today ? 'Read today’s devotional' : 'Read the latest devotional'}</ButtonLink>
                   <MoreLink href="/hope">Earlier devotionals</MoreLink>
                 </div>
               </div>
@@ -146,7 +147,8 @@ export default async function HomePage() {
           )}
           <div>
             <SectionHeading kicker="Recent messages" title="Hear the Word" />
-            <ul className="mt-10 divide-y divide-brand-950/10 border-y border-brand-950/10">
+            {sermons.length === 0 && <p className="mt-10 text-lg text-ink/60">Recent sermons will appear here soon.</p>}
+            <ul className={`mt-10 divide-y divide-brand-950/10 border-y border-brand-950/10 ${sermons.length ? '' : 'hidden'}`}>
               {sermons.map((s) => (
                 <li key={s.id}>
                   <Link href="/watch" className="group flex items-center gap-5 py-5">
@@ -155,7 +157,7 @@ export default async function HomePage() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-heading text-lg font-semibold tracking-tight text-brand-950">{s.title}</span>
-                      <span className="block text-sm text-ink/55">{s.preacher} · {fmtShortDate(s.date)}{s.scripture ? ` · ${s.scripture}` : ''}</span>
+                      <span className="block text-sm text-ink/55">{s.preacher} · {fmtShortDate(s.date)}{s.scriptures.length ? ` · ${scriptureLine(s)}` : ''}</span>
                     </span>
                   </Link>
                 </li>
@@ -175,6 +177,7 @@ export default async function HomePage() {
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {events.map((e) => <EventCard key={e.id} event={e} />)}
+            {events.length === 0 && <p className="text-lg text-ink/60 md:col-span-3">Nothing is scheduled just now. Check back soon.</p>}
           </div>
         </Container>
       </section>

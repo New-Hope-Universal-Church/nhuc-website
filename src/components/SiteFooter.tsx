@@ -35,7 +35,7 @@ export default async function SiteFooter() {
             </ul>
           </div>
 
-          <div>
+          <div className={schedule.length ? '' : 'hidden'}>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Gather with us</h2>
             <ul className="mt-5 space-y-4 text-sm">
               {schedule.map((s) => (

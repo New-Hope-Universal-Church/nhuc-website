@@ -1,3 +1,5 @@
+import { cacheLife } from 'next/cache';
+
 /** Dates are shown in Ghana time, whatever server renders the page. */
 const TZ = 'Africa/Accra';
 
@@ -18,3 +20,11 @@ export const dateTile = (iso: string) => {
     day: parts.find((p) => p.type === 'day')?.value ?? '',
   };
 };
+
+/** Today in Ghana, "2026-11-14". Cached and refreshed every few minutes,
+ *  which pre-built pages need for anything that depends on "now". */
+export async function todayInGhana(): Promise<string> {
+  'use cache';
+  cacheLife('minutes');
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
+}

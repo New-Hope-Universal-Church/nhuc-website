@@ -94,7 +94,7 @@ export default function SiteHeader() {
           className="lg:hidden absolute inset-x-0 top-full mt-2 max-h-[calc(100svh-6rem)] overflow-y-auto rounded-xl bg-church p-3 shadow-2xl ring-1 ring-white/10"
         >
           <nav aria-label="Main" className="flex flex-col">
-            {[{ href: '/', label: 'Home' }, ...nav].map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
