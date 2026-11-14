@@ -15,7 +15,7 @@ const merriweather = Merriweather({ variable: '--font-merriweather', subsets: ['
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | ${site.motto}`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} | ${site.motto}`, template: `%s | ${site.shortName}` },
   description: `${site.name} in ${site.address.line1}, ${site.address.city}. Join us for Sunday Service, prayer and fellowship. ${site.motto}`,
   icons: { icon: '/images/logo.png', apple: '/images/logo.png' },
   openGraph: {
