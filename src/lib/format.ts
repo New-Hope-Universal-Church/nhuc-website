@@ -21,6 +21,14 @@ export const dateTile = (iso: string) => {
   };
 };
 
+/** The current moment (ISO), refreshed every minute or so. Pre-built pages
+ *  need a cached "now"; good enough to tell whether a service is live. */
+export async function nowInGhana(): Promise<string> {
+  'use cache';
+  cacheLife('minutes');
+  return new Date().toISOString();
+}
+
 /** Today in Ghana, "2026-11-14". Cached and refreshed every few minutes,
  *  which pre-built pages need for anything that depends on "now". */
 export async function todayInGhana(): Promise<string> {

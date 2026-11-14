@@ -60,6 +60,9 @@ export interface UpcomingEvent {
   eventType: { name: string } | null;
   /** 1st service, 2nd service... when the event runs more than once. */
   sessions: EventSession[];
+  /** Where it is streamed live, if it is. */
+  youtubeUrl: string | null;
+  facebookUrl: string | null;
 }
 
 export interface Sermon {
@@ -100,7 +103,9 @@ export interface Devotional {
 
 export async function getSchedule(): Promise<ScheduleItem[]> {
   'use cache';
-  cacheLife('hours');
+  // Minutes, not hours: a failed fetch (e.g. during a HopeServe deploy) is
+  // cached too, and should not stick around.
+  cacheLife('minutes');
   return feed<ScheduleItem[]>('/schedule', []);
 }
 
@@ -142,6 +147,13 @@ export async function getLatestDevotional(): Promise<Devotional | null> {
 export function excerpt(d: { body: string }, max = 220): string {
   const text = d.body.replace(/[*_#>]/g, '').replace(/\s+/g, ' ').trim();
   return text.length <= max ? text : `${text.slice(0, text.lastIndexOf(' ', max))}…`;
+}
+
+/** Where to watch an event live: YouTube first, then Facebook. */
+export function streamLink(e: Pick<UpcomingEvent, 'youtubeUrl' | 'facebookUrl'>): { href: string; label: string } | null {
+  if (e.youtubeUrl) return { href: e.youtubeUrl, label: 'YouTube' };
+  if (e.facebookUrl) return { href: e.facebookUrl, label: 'Facebook' };
+  return null;
 }
 
 /** "John 3:16 · Romans 8:28" */

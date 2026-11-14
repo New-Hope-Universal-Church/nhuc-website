@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import type { ScheduleItem, UpcomingEvent } from '@/lib/hopeserve';
+import { streamLink, type ScheduleItem, type UpcomingEvent } from '@/lib/hopeserve';
 import { dateTile, fmtDay, fmtTime } from '@/lib/format';
 import { site } from '@/lib/site';
 import { ArrowRight, Container, Kente, Kicker, Photo, Scripture } from './ui';
@@ -47,9 +47,33 @@ export function ServiceTimes({ items, light = false }: { items: ScheduleItem[]; 
   );
 }
 
-/** One upcoming event as a card with a date tile. */
-export function EventCard({ event }: { event: UpcomingEvent }) {
+/** On now: from 15 minutes before the start until the end (or 3 hours in). */
+export function isLive(e: Pick<UpcomingEvent, 'startDate' | 'endDate'>, nowIso: string): boolean {
+  const now = new Date(nowIso).getTime();
+  const start = new Date(e.startDate).getTime();
+  const end = e.endDate ? new Date(e.endDate).getTime() : start + 3 * 3_600_000;
+  return now >= start - 15 * 60_000 && now <= end;
+}
+
+/** A pulsing crimson "LIVE NOW" tag. */
+export function LiveBadge() {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-sm bg-crimson-600 px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+      <span className="relative flex h-2 w-2" aria-hidden="true">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+      </span>
+      Live now
+    </span>
+  );
+}
+
+/** One upcoming event as a card with a date tile, and a watch-live link when
+ *  it is streamed. */
+export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }) {
   const tile = dateTile(event.startDate);
+  const stream = streamLink(event);
+  const live = now ? isLive(event, now) : false;
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10 transition-shadow hover:shadow-[0_14px_32px_-14px_rgba(6,34,20,0.25)]">
       <div className="flex items-stretch">
@@ -76,6 +100,16 @@ export function EventCard({ event }: { event: UpcomingEvent }) {
           </ul>
         )}
         {event.description && <p className="mt-4 text-sm leading-relaxed text-ink/70">{event.description}</p>}
+        {(live || stream) && (
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            {live && <LiveBadge />}
+            {stream && (
+              <a href={stream.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
+                {live ? 'Watch live now' : `Watch live on ${stream.label}`} <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );
@@ -88,44 +122,6 @@ export function MoreLink({ href, children, light = false }: { href: string; chil
       {children}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
     </Link>
-  );
-}
-
-/**
- * The call and response: the man of God calls "New Hope!" and the church
- * answers, in Twi with the English beneath.
- */
-export function CallAndResponse() {
-  return (
-    <section className="bg-church relative overflow-hidden">
-      <Kente />
-      <Container className="py-20 sm:py-28">
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <div>
-            <Kicker>Our family</Kicker>
-            <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-white/55">The man of God calls</p>
-            <p className="mt-2 font-display text-5xl font-extrabold uppercase leading-none tracking-tight text-gold-300 sm:text-7xl">{site.call}</p>
-            <p className="mt-6 max-w-sm text-white/65">
-              We are Christian and proudly Ghanaian. When the man of God calls, the church answers as one family, in Twi and in every language we bring.
-            </p>
-          </div>
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/55">And we respond</p>
-            <ol className="mt-4 divide-y divide-white/10 border-y border-white/10">
-              {site.responses.map((r) => (
-                <li key={r.twi} className="py-6">
-                  <p lang="tw" className="font-display text-2xl font-extrabold uppercase tracking-tight text-ivory sm:text-[2rem] sm:leading-tight">
-                    <span className="text-gold-300">New Hope,</span> {r.twi}
-                  </p>
-                  <Scripture light className="mt-1.5">{r.english}</Scripture>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </Container>
-      <Kente />
-    </section>
   );
 }
 

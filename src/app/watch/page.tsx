@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { getLatestSermons, scriptureLine, type Sermon } from '@/lib/hopeserve';
-import { fmtShortDate } from '@/lib/format';
+import { getLatestSermons, getUpcomingEvents, scriptureLine, streamLink, type Sermon } from '@/lib/hopeserve';
+import { fmtDay, fmtShortDate, fmtTime, nowInGhana } from '@/lib/format';
 import { site } from '@/lib/site';
 import Markdown from '@/components/Markdown';
 import { Container, Kicker, Photo } from '@/components/ui';
-import { PageHero } from '@/components/sections';
+import { LiveBadge, PageHero, isLive } from '@/components/sections';
 
 export const metadata: Metadata = {
   title: 'Watch',
@@ -42,11 +42,41 @@ function WatchLinks({ sermon }: { sermon: Sermon }) {
 }
 
 export default async function WatchPage() {
-  const sermons = await getLatestSermons(24);
+  const [sermons, events, now] = await Promise.all([getLatestSermons(24), getUpcomingEvents(10), nowInGhana()]);
   const [latest, ...rest] = sermons;
+  // The next service that is streamed, and whether it is on right now.
+  const streamed = events.find((e) => streamLink(e));
+  const stream = streamed ? streamLink(streamed) : null;
+  const live = streamed ? isLive(streamed, now) : false;
   return (
     <>
       <PageHero kicker="Sermons" title="Hear the Word" intro="Missed a Sunday, or want to hear it again? Watch and listen to recent messages." shot="The Leader preaching" />
+
+      {streamed && stream && (
+        <section className="pt-16 sm:pt-20">
+          <Container>
+            <div className={`flex flex-col gap-6 rounded-md p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10 ${live ? 'bg-crimson-700 text-white' : 'bg-white ring-1 ring-brand-950/10'}`}>
+              <div>
+                {live ? <LiveBadge /> : <Kicker>Next live stream</Kicker>}
+                <h2 className={`mt-4 font-heading text-3xl font-semibold tracking-tight ${live ? 'text-white' : 'text-brand-950'}`}>{streamed.title}</h2>
+                <p className={`mt-1 ${live ? 'text-white/80' : 'text-ink/60'}`}>{live ? 'On now' : `${fmtDay(streamed.startDate)} · ${fmtTime(streamed.startDate)}`}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {streamed.youtubeUrl && (
+                  <a href={streamed.youtubeUrl} target="_blank" rel="noreferrer" className={`inline-flex h-12 items-center rounded-md px-6 font-display text-[12px] font-bold uppercase tracking-[0.14em] ${live ? 'bg-white text-crimson-700 hover:bg-ivory' : 'bg-crimson-600 text-white hover:bg-crimson-700'}`}>
+                    {live ? 'Watch live on YouTube' : 'YouTube'}
+                  </a>
+                )}
+                {streamed.facebookUrl && (
+                  <a href={streamed.facebookUrl} target="_blank" rel="noreferrer" className="inline-flex h-12 items-center rounded-md bg-[#1d5fbf] px-6 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-white hover:bg-[#184f9f]">
+                    {live ? 'Watch live on Facebook' : 'Facebook'}
+                  </a>
+                )}
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
 
       {!latest && (
         <section className="py-24">
