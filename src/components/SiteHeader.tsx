@@ -101,21 +101,7 @@ export default function SiteHeader() {
           <nav aria-label="Main" className="flex flex-col">
             {nav.map((item) =>
               'items' in item ? (
-                <div key={item.label} className="mt-1 border-t border-white/10 pt-2">
-                  <p className="px-4 pt-1 pb-1 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-gold-300/80">{item.label}</p>
-                  {item.items.map((sub) => (
-                    <Link
-                      key={sub.href}
-                      href={sub.href}
-                      aria-current={isActive(sub.href) ? 'page' : undefined}
-                      className={`block rounded-lg px-4 py-2.5 font-heading text-2xl font-semibold transition-colors hover:bg-white/5 ${isActive(sub.href) ? 'text-gold-300' : 'text-white'}`}
-                    >
-                      {sub.label}
-                      {sub.blurb && <span className="block font-sans text-sm font-normal text-white/50">{sub.blurb}</span>}
-                    </Link>
-                  ))}
-                  <div className="mb-1 mt-2 border-b border-white/10" />
-                </div>
+                <MobileGroup key={item.label} label={item.label} items={item.items} isActive={isActive} />
               ) : (
                 <Link
                   key={item.href}
@@ -209,6 +195,45 @@ function MenuGroup({
           </ul>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * A group in the phone menu ("The Word", "Join Us"): a row that folds open
+ * to show its pages underneath, on a lighter band. Starts open when you are
+ * on one of its pages.
+ */
+function MobileGroup({ label, items, isActive }: { label: string; items: NavLink[]; isActive: (href: string) => boolean }) {
+  const here = items.some((i) => isActive(i.href));
+  const [open, setOpen] = useState(here);
+  const id = `menu-${label.toLowerCase().replace(/\W+/g, '-')}`;
+  return (
+    <div>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((v) => !v)}
+        className={`flex w-full items-center justify-between rounded-lg px-4 py-3.5 text-left font-heading text-2xl font-semibold transition-colors hover:bg-white/5 ${here ? 'text-gold-300' : 'text-white'}`}
+      >
+        {label}
+        <svg className={`h-5 w-5 text-white/60 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+          <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <div id={id} hidden={!open} className="mb-1 rounded-lg bg-white/[0.06] py-1">
+        {items.map((sub) => (
+          <Link
+            key={sub.href}
+            href={sub.href}
+            aria-current={isActive(sub.href) ? 'page' : undefined}
+            className={`block px-7 py-3 text-lg transition-colors hover:bg-white/5 ${isActive(sub.href) ? 'font-semibold text-gold-300' : 'text-white/80'}`}
+          >
+            {sub.label}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

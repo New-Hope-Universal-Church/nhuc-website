@@ -5,7 +5,7 @@
 export const site = {
   name: 'New Hope Universal Church',
   shortName: 'NHUC',
-  motto: 'Christ in you, the hope of glory.',
+  motto: 'Christ in you, the Hope of Glory.',
   mottoReference: 'Colossians 1:27',
   /** The verse on the banner behind the pulpit, the church's anchor scripture. */
   anchorVerse: {
@@ -61,7 +61,8 @@ export interface NavLink {
 }
 export type NavItem = NavLink | { label: string; items: NavLink[] };
 
-/** The main menu. "The Word" groups the daily devotional and the preaching. */
+/** The main menu. "The Word" groups the daily devotional and the preaching;
+ *  "Join Us" groups signing up and following online. */
 export const nav: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
@@ -74,6 +75,13 @@ export const nav: NavItem[] = [
     ],
   },
   { href: '/events', label: 'Events' },
+  {
+    label: 'Join Us',
+    items: [
+      { href: '/join', label: 'Become part of the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
+      { href: '/online', label: 'Online family', blurb: 'Worship with us from anywhere' },
+    ],
+  },
   { href: '/contact', label: 'Contact' },
 ];
 
