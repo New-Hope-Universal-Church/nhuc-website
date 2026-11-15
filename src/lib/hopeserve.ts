@@ -57,12 +57,24 @@ export interface UpcomingEvent {
   endDate: string | null;
   location: string | null;
   description: string | null;
-  eventType: { name: string } | null;
+  /** `counselling`: a counselling day, which people book on the website. */
+  eventType: { name: string; counselling: boolean } | null;
+  /** True when it was called off (only on an event's own page). */
+  cancelled?: boolean;
   /** 1st service, 2nd service... when the event runs more than once. */
   sessions: EventSession[];
   /** Where it is streamed live, if it is. */
   youtubeUrl: string | null;
   facebookUrl: string | null;
+}
+
+/** A counselling day people can put their names down for. */
+export interface CounsellingDay {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string | null;
+  location: string | null;
 }
 
 export interface Sermon {
@@ -115,6 +127,21 @@ export async function getUpcomingEvents(limit = 6): Promise<UpcomingEvent[]> {
   return feed<UpcomingEvent[]>(`/events?limit=${limit}`, []);
 }
 
+/** One church-wide event, past or future, or null. */
+export async function getEvent(id: string): Promise<UpcomingEvent | null> {
+  'use cache';
+  cacheLife('minutes');
+  if (!/^[\w-]{1,40}$/.test(id)) return null;
+  return feed<UpcomingEvent | null>(`/events/${id}`, null);
+}
+
+/** The next counselling days open for booking, soonest first. */
+export async function getCounsellingDays(): Promise<CounsellingDay[]> {
+  'use cache';
+  cacheLife('minutes');
+  return feed<CounsellingDay[]>('/counselling/days', []);
+}
+
 export async function getLatestSermons(limit = 12): Promise<Sermon[]> {
   'use cache';
   cacheLife('minutes');
@@ -154,6 +181,11 @@ export function streamLink(e: Pick<UpcomingEvent, 'youtubeUrl' | 'facebookUrl'>)
   if (e.youtubeUrl) return { href: e.youtubeUrl, label: 'YouTube' };
   if (e.facebookUrl) return { href: e.facebookUrl, label: 'Facebook' };
   return null;
+}
+
+/** "9:00 AM to 4:00 PM", or just the start. */
+export function hours(e: { startDate: string; endDate: string | null }, fmt: (iso: string) => string): string {
+  return e.endDate ? `${fmt(e.startDate)} to ${fmt(e.endDate)}` : fmt(e.startDate);
 }
 
 /** "John 3:16 · Romans 8:28" */

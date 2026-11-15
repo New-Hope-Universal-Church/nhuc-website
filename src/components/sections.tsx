@@ -68,14 +68,16 @@ export function LiveBadge() {
   );
 }
 
-/** One upcoming event as a card with a date tile, and a watch-live link when
- *  it is streamed. */
+/** One upcoming event as a card with a date tile. The whole card opens the
+ *  event's page; a watch-live link (or, for a counselling day, a booking
+ *  link) sits on top of it. */
 export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }) {
   const tile = dateTile(event.startDate);
   const stream = streamLink(event);
   const live = now ? isLive(event, now) : false;
+  const counselling = event.eventType?.counselling;
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10 transition-shadow hover:shadow-[0_14px_32px_-14px_rgba(6,34,20,0.25)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10 transition-shadow hover:shadow-[0_14px_32px_-14px_rgba(6,34,20,0.25)] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-gold-400">
       <div className="flex items-stretch">
         <div className="flex w-20 flex-col items-center justify-center bg-brand-950 py-4 text-white">
           <span className="font-display text-[11px] font-bold tracking-[0.2em] text-gold-300">{tile.month}</span>
@@ -88,7 +90,10 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
       </div>
       <Kente className="!h-1.5" />
       <div className="flex-1 p-6">
-        <h3 className="font-heading text-xl font-semibold leading-tight tracking-tight text-brand-950">{event.title}</h3>
+        <h3 className="font-heading text-xl font-semibold leading-tight tracking-tight text-brand-950 group-hover:text-brand-700">
+          {/* Stretched over the card, so a tap anywhere opens the event. */}
+          <Link href={`/events/${event.id}`} className="after:absolute after:inset-0 focus-visible:outline-none">{event.title}</Link>
+        </h3>
         {event.location && <p className="mt-1 text-sm text-ink/55">{event.location}</p>}
         {event.sessions.length > 1 && (
           <ul className="mt-4 flex flex-wrap gap-2">
@@ -99,14 +104,19 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
             ))}
           </ul>
         )}
-        {event.description && <p className="mt-4 text-sm leading-relaxed text-ink/70">{event.description}</p>}
-        {(live || stream) && (
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+        {event.description && <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-ink/70">{event.description}</p>}
+        {(live || stream || counselling) && (
+          <div className="relative z-10 mt-5 flex flex-wrap items-center gap-3">
             {live && <LiveBadge />}
             {stream && (
               <a href={stream.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
                 {live ? 'Watch live now' : `Watch live on ${stream.label}`} <ArrowRight className="h-3.5 w-3.5" />
               </a>
+            )}
+            {counselling && (
+              <Link href={`/counselling?day=${event.id}`} className="inline-flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
+                Put your name down <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             )}
           </div>
         )}
