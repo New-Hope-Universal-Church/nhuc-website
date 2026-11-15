@@ -5,7 +5,7 @@
 export const site = {
   name: 'New Hope Universal Church',
   shortName: 'NHUC',
-  motto: 'Christ in you, the hope of glory.',
+  motto: 'Christ in you, the Hope of Glory.',
   mottoReference: 'Colossians 1:27',
   /** The verse on the banner behind the pulpit, the church's anchor scripture. */
   anchorVerse: {
@@ -53,12 +53,37 @@ export const site = {
   },
 } as const;
 
-export const nav = [
+export interface NavLink {
+  href: string;
+  label: string;
+  /** One line under the label in a menu group. */
+  blurb?: string;
+}
+export type NavItem = NavLink | { label: string; items: NavLink[] };
+
+/** The main menu. "The Word" groups the daily devotional and the preaching;
+ *  "Join Us" groups signing up and following online. */
+export const nav: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/visit', label: 'Visit' },
-  { href: '/hope', label: 'Hope for Today' },
-  { href: '/watch', label: 'Watch' },
+  {
+    label: 'The Word',
+    items: [
+      { href: '/hope', label: 'Hope for Today', blurb: 'A word for each day' },
+      { href: '/watch', label: 'Watch', blurb: 'Sermons and live streams' },
+    ],
+  },
   { href: '/events', label: 'Events' },
+  {
+    label: 'Join Us',
+    items: [
+      { href: '/join', label: 'Become part of the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
+      { href: '/online', label: 'Online family', blurb: 'Worship with us from anywhere' },
+    ],
+  },
   { href: '/contact', label: 'Contact' },
-] as const;
+];
+
+/** Every page in the menu, groups opened up (for the footer). */
+export const navLinks: NavLink[] = nav.flatMap((i) => ('items' in i ? i.items : [i]));

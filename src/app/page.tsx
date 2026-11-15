@@ -31,7 +31,7 @@ export default async function HomePage() {
           <div className="order-1 lg:order-2">
             <Kicker>Welcome home</Kicker>
             <h1 className="mt-7 font-heading text-[clamp(2.4rem,6.2vw,5.25rem)] font-semibold leading-[1.02] tracking-tight text-ivory">
-              Christ in you, <span className="text-gold-300">the hope of glory</span>
+              Christ in you, <span className="text-gold-300">the Hope of Glory</span>
             </h1>
             <Scripture light className="mt-4 text-base">{site.mottoReference}</Scripture>
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/75">
