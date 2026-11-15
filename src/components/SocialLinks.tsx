@@ -2,7 +2,7 @@ import { site } from '@/lib/site';
 
 type Network = keyof typeof site.social;
 
-const NETWORKS: { key: Network; label: string; path: string }[] = [
+export const NETWORKS: { key: Network; label: string; path: string }[] = [
   {
     key: 'facebook',
     label: 'Facebook',

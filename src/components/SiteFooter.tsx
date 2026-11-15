@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { cacheLife } from 'next/cache';
-import { nav, site } from '@/lib/site';
+import { navLinks, site } from '@/lib/site';
 import { getSchedule } from '@/lib/hopeserve';
 import { Container, Kente, Logo } from './ui';
 import SocialLinks from './SocialLinks';
@@ -28,7 +28,7 @@ export default async function SiteFooter() {
           <div>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Explore</h2>
             <ul className="mt-5 space-y-3 text-sm">
-              {nav.map((item) => (
+              {navLinks.map((item) => (
                 <li key={item.href}><Link href={item.href} className="text-white/70 hover:text-white">{item.label}</Link></li>
               ))}
               <li><Link href="/counselling" className="text-white/70 hover:text-white">Counselling</Link></li>
