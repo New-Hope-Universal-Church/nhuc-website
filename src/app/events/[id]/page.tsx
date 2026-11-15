@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getEvent, getUpcomingEvents, hours } from '@/lib/hopeserve';
@@ -117,6 +118,11 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
           </div>
 
           <dl className="space-y-6 self-start">
+            {e.flyerUrl && (
+              <a href={e.flyerUrl} target="_blank" rel="noreferrer" className="block">
+                <Image src={e.flyerUrl} alt={`${e.title} flyer`} width={800} height={1000} sizes="(min-width: 1024px) 40vw, 100vw" className="h-auto w-full rounded-md ring-1 ring-brand-950/10" />
+              </a>
+            )}
             <Detail label="When">
               {fmtDay(e.startDate)}
               <span className="block text-ink/60">{hours(e, fmtTime)}</span>

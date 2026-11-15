@@ -61,17 +61,19 @@ export interface NavLink {
 }
 export type NavItem = NavLink | { label: string; items: NavLink[] };
 
-/** The main menu. "The Word" groups the daily devotional and the preaching;
+/** The main menu. "Outreach" mirrors HopeServe's Outreach section;
  *  "Join Us" groups signing up and following online. */
 export const nav: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/visit', label: 'Visit' },
   {
-    label: 'The Word',
+    label: 'Outreach',
     items: [
       { href: '/hope', label: 'Hope for Today', blurb: 'A word for each day' },
-      { href: '/watch', label: 'Watch', blurb: 'Sermons and live streams' },
+      { href: '/watch', label: 'Sermons', blurb: 'Sermons and live streams' },
+      { href: '/announcements', label: 'Announcements', blurb: 'News from the church' },
+      { href: '/counselling', label: 'Counselling', blurb: 'Book a time to talk and pray with us' },
     ],
   },
   { href: '/events', label: 'Events' },

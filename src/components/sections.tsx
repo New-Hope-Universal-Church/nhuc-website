@@ -89,6 +89,7 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
         </div>
       </div>
       <Kente className="!h-1.5" />
+      {event.flyerUrl && <Photo src={event.flyerUrl} alt={`${event.title} flyer`} shot="Event flyer" sizes="(min-width: 1024px) 33vw, 100vw" className="aspect-[3/2]" />}
       <div className="flex-1 p-6">
         <h3 className="font-heading text-xl font-semibold leading-tight tracking-tight text-brand-950 group-hover:text-brand-700">
           {/* Stretched over the card, so a tap anywhere opens the event. */}

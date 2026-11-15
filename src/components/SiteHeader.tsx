@@ -124,7 +124,7 @@ export default function SiteHeader() {
 }
 
 /**
- * A menu heading with a small panel of links ("The Word"). Opens on hover or
+ * A menu heading with a small panel of links ("Outreach"). Opens on hover or
  * click, closes on Escape, a click elsewhere, or moving to another page.
  */
 function MenuGroup({
@@ -200,7 +200,7 @@ function MenuGroup({
 }
 
 /**
- * A group in the phone menu ("The Word", "Join Us"): a row that folds open
+ * A group in the phone menu ("Outreach", "Join Us"): a row that folds open
  * to show its pages underneath, on a lighter band. Starts open when you are
  * on one of its pages.
  */
