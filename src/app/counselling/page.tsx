@@ -1,34 +1,39 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { site } from '@/lib/site';
-import { todayInGhana } from '@/lib/format';
+import { getCounsellingDays, hours } from '@/lib/hopeserve';
+import { fmtDay, fmtTime } from '@/lib/format';
 import { Container, Kicker } from '@/components/ui';
 import { PageHero } from '@/components/sections';
-import BookingForm from './BookingForm';
+import BookingForm, { type DayOption } from './BookingForm';
 
 export const metadata: Metadata = {
-  title: 'Book counselling',
-  description: `Book a confidential counselling session at ${site.name}. We will call you to confirm a time.`,
+  title: 'Counselling',
+  description: `Put your name down for counselling at ${site.name}, then come on the day. Confidential.`,
 };
 
 const POINTS = [
+  { title: 'Put your name down', text: 'Choose one of the coming counselling days and add your name to the list.' },
+  { title: 'Come on the day', text: `Come to the church in ${site.address.line1} during the hours shown. You will be seen in the order you arrive.` },
   { title: 'Confidential', text: 'What you share stays between you and the person who counsels you.' },
-  { title: 'We call you', text: 'Someone from the church will call to agree a time that suits you.' },
-  { title: 'In person or by phone', text: `Meet at the church in ${site.address.line1}, or talk on the phone.` },
 ];
 
 export default async function CounsellingPage() {
-  const today = await todayInGhana();
+  const days: DayOption[] = (await getCounsellingDays()).map((d) => ({ id: d.id, day: fmtDay(d.startDate), hours: hours(d, fmtTime) }));
   return (
     <>
       <PageHero
         kicker="Counselling"
-        title="Book a counselling session"
-        intro="Whatever you are carrying, you do not have to carry it alone. Ask for a time to talk and pray with someone from the church."
+        title="Talk and pray with someone"
+        intro="Whatever you are carrying, you do not have to carry it alone. Put your name down for a counselling day and come to see the Leader."
         shot="A quiet conversation and prayer"
       />
       <section className="py-20 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-          <BookingForm minDate={today} />
+          {/* The form reads ?day= from the address, so it renders in the browser. */}
+          <Suspense fallback={<div className="min-h-[32rem] rounded-md bg-white ring-1 ring-brand-950/10" />}>
+            <BookingForm days={days} />
+          </Suspense>
           <aside className="space-y-8">
             {POINTS.map((p) => (
               <div key={p.title}>
