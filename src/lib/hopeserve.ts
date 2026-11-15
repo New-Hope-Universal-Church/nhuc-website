@@ -2,7 +2,8 @@ import { cacheLife } from 'next/cache';
 
 /**
  * Content from HopeServe's public feed (GET {HOPESERVE_API_URL}/public/...):
- * the weekly schedule, upcoming events, sermons and Hope for Today. The feed
+ * the weekly schedule, upcoming events, sermons, announcements and Hope for
+ * Today. The feed
  * is read-only and holds no member data.
  *
  * Results are cached and refreshed in the background, so pages stay fast and
@@ -66,6 +67,8 @@ export interface UpcomingEvent {
   /** Where it is streamed live, if it is. */
   youtubeUrl: string | null;
   facebookUrl: string | null;
+  /** The event's flyer image. */
+  flyerUrl: string | null;
 }
 
 /** A counselling day people can put their names down for. */
@@ -90,6 +93,17 @@ export interface Sermon {
   youtubeUrl: string | null;
   facebookUrl: string | null;
   otherUrl: string | null;
+}
+
+export interface Announcement {
+  id: string;
+  title: string;
+  /** In Markdown. */
+  body: string;
+  date: string;
+  expiresAt: string | null;
+  pinned: boolean;
+  imageUrl: string | null;
 }
 
 /** A Hope for Today devotional. */
@@ -146,6 +160,13 @@ export async function getLatestSermons(limit = 12): Promise<Sermon[]> {
   'use cache';
   cacheLife('minutes');
   return feed<Sermon[]>(`/sermons?limit=${limit}`, []);
+}
+
+/** Current announcements chosen for the website, pinned first. */
+export async function getAnnouncements(limit = 20): Promise<Announcement[]> {
+  'use cache';
+  cacheLife('minutes');
+  return feed<Announcement[]>(`/announcements?limit=${limit}`, []);
 }
 
 /** Recent devotionals, newest first. */
