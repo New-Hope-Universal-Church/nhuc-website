@@ -53,12 +53,29 @@ export const site = {
   },
 } as const;
 
-export const nav = [
+export interface NavLink {
+  href: string;
+  label: string;
+  /** One line under the label in a menu group. */
+  blurb?: string;
+}
+export type NavItem = NavLink | { label: string; items: NavLink[] };
+
+/** The main menu. "The Word" groups the daily devotional and the preaching. */
+export const nav: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/visit', label: 'Visit' },
-  { href: '/hope', label: 'Hope for Today' },
-  { href: '/watch', label: 'Watch' },
+  {
+    label: 'The Word',
+    items: [
+      { href: '/hope', label: 'Hope for Today', blurb: 'A word for each day' },
+      { href: '/watch', label: 'Watch', blurb: 'Sermons and live streams' },
+    ],
+  },
   { href: '/events', label: 'Events' },
   { href: '/contact', label: 'Contact' },
-] as const;
+];
+
+/** Every page in the menu, groups opened up (for the footer). */
+export const navLinks: NavLink[] = nav.flatMap((i) => ('items' in i ? i.items : [i]));
