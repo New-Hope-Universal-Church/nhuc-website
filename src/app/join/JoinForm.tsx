@@ -9,10 +9,10 @@ const input =
 const label = 'block font-display text-[12px] font-bold uppercase tracking-[0.14em] text-ink/60 mb-2';
 const optional = <span className="normal-case tracking-normal font-normal text-ink/40">(optional)</span>;
 
-const CHOICES: { value: Intent; title: string; text: string }[] = [
+const CHOICES: { value: Intent; title: string; text?: string }[] = [
   { value: 'MEMBERSHIP', title: 'Become a member', text: 'Make New Hope your church home.' },
   { value: 'VISIT', title: 'Plan a visit', text: 'Tell us you are coming, and we will look out for you.' },
-  { value: 'NEW_CONVERT', title: 'I gave my life to Christ', text: 'Let us walk with you in your new life.' },
+  { value: 'NEW_CONVERT', title: 'Gave my life to Christ', text: 'Let us walk with you in your new life.' },
 ];
 
 const THANKS: Record<Intent, string> = {
@@ -49,9 +49,9 @@ export default function JoinForm({ minDate }: { minDate: string }) {
     <form action={action} className="rounded-md bg-white p-6 ring-1 ring-brand-950/10 sm:p-10">
       <fieldset>
         <legend className={label}>I would like to</legend>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="flex space-x-3">
           {CHOICES.map((c) => (
-            <label key={c.value} className="flex cursor-pointer flex-col rounded-md px-4 py-4 ring-1 ring-inset ring-brand-950/15 has-[:checked]:bg-gold-50 has-[:checked]:ring-2 has-[:checked]:ring-gold-400">
+            <label key={c.value} className="flex cursor-pointer flex-col rounded-md px-4 py-2 ring-1 ring-inset ring-brand-950/15 has-checked:bg-gold-50 has-checked:ring-2 has-checked:ring-gold-400">
               <span className="flex items-center gap-2.5">
                 <input
                   type="radio"
@@ -63,7 +63,7 @@ export default function JoinForm({ minDate }: { minDate: string }) {
                 />
                 <span className="font-semibold text-brand-950">{c.title}</span>
               </span>
-              <span className="mt-1.5 pl-6 text-sm text-ink/60">{c.text}</span>
+              {/* <span className="mt-1.5 pl-6 text-sm text-ink/60">{c.text}</span> */}
             </label>
           ))}
         </div>
@@ -93,7 +93,6 @@ export default function JoinForm({ minDate }: { minDate: string }) {
         <div>
           <label htmlFor="gender" className={label}>Gender {optional}</label>
           <select id="gender" name="gender" defaultValue={v.gender ?? ''} className={input}>
-            <option value="">Prefer not to say</option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
           </select>
@@ -109,7 +108,7 @@ export default function JoinForm({ minDate }: { minDate: string }) {
           <textarea id="message" name="message" rows={3} maxLength={1000} defaultValue={v.message} placeholder="A prayer request, a question, who invited you…" className={`${input} h-auto py-3`} />
         </div>
         {/* Honeypot: hidden from people, filled in by spam bots. */}
-        <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
           <label htmlFor="website">Leave this empty</label>
           <input id="website" name="website" tabIndex={-1} autoComplete="off" />
         </div>
