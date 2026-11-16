@@ -70,7 +70,7 @@ export const nav: NavItem[] = [
   {
     label: 'Outreach',
     items: [
-      { href: '/hope', label: 'Hope for Today', blurb: 'A word for each day' },
+      { href: '/hope', label: 'Daily Devotional', blurb: 'A word for each day' },
       { href: '/watch', label: 'Sermons', blurb: 'Sermons and live streams' },
       { href: '/announcements', label: 'Announcements', blurb: 'News from the church' },
       { href: '/counselling', label: 'Counselling', blurb: 'Book a time to talk and pray with us' },

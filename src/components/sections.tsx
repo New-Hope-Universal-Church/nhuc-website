@@ -18,7 +18,7 @@ export function PageHero({ kicker, title, intro, shot, src }: { kicker: string; 
           <Kicker>{kicker}</Kicker>
           <h1 className="mt-6 font-heading text-4xl font-semibold leading-[1.05] tracking-tight text-ivory sm:text-5xl lg:text-6xl">{title}</h1>
           {intro && <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">{intro}</p>}
-          <Scripture light className="mt-8 text-sm">{site.motto}</Scripture>
+          {/* <Scripture light className="mt-8 text-sm">{site.motto}</Scripture>S */}
         </div>
         <Photo framed src={src} alt="" shot={shot} priority sizes="(min-width: 1024px) 35vw, 100vw" className="hidden w-full max-w-sm justify-self-end lg:block" />
       </Container>

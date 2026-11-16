@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import Link from 'next/link';
@@ -187,7 +188,7 @@ function MenuGroup({
                     className={`block rounded-lg px-4 py-3 transition-colors hover:bg-brand-950/5 ${active ? 'bg-brand-950/5' : ''}`}
                   >
                     <span className="block font-heading text-lg font-semibold text-brand-950">{i.label}</span>
-                    {i.blurb && <span className="block text-sm text-ink/55">{i.blurb}</span>}
+                    {/* {i.blurb && <span className="block text-sm text-ink/55">{i.blurb}</span>} */}
                   </Link>
                 </li>
               );
@@ -222,7 +223,7 @@ function MobileGroup({ label, items, isActive }: { label: string; items: NavLink
           <path d="M5 8l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <div id={id} hidden={!open} className="mb-1 rounded-lg bg-white/[0.06] py-1">
+      <div id={id} hidden={!open} className="mb-1 rounded-lg bg-white/6 py-1">
         {items.map((sub) => (
           <Link
             key={sub.href}
