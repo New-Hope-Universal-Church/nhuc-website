@@ -58,6 +58,8 @@ export interface UpcomingEvent {
   startDate: string;
   endDate: string | null;
   location: string | null;
+  /** Who leads or speaks, e.g. "The Leader". */
+  host?: string | null;
   description: string | null;
   /** `counselling`: a counselling day, which people book on the website. */
   eventType: { name: string; counselling: boolean } | null;
