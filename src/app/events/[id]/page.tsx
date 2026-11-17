@@ -3,9 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { getEvent, getUpcomingEvents, hours } from '@/lib/hopeserve';
-import { fmtDay, fmtTime, nowInGhana } from '@/lib/format';
+import { fmtDays, fmtTime, fmtWeekday, isMultiDay, nowInGhana } from '@/lib/format';
 import { site } from '@/lib/site';
-import { ArrowRight, ButtonLink, Container, Kente, Kicker } from '@/components/ui';
+import { ArrowLeft, ArrowRight, ButtonLink, Container, Kente, Kicker } from '@/components/ui';
 import { LiveBadge, isLive } from '@/components/sections';
 
 /** Upcoming events are built ahead; any other is built on first visit. */
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps<'/events/[id]'>): P
   const { id } = await params;
   const e = await getEvent(id);
   if (!e) return { title: 'Event' };
-  const when = `${fmtDay(e.startDate)}, ${fmtTime(e.startDate)}`;
+  const when = `${fmtDays(e)}, ${fmtTime(e.startDate)}`;
   const description = e.description ? `${when}. ${e.description}`.slice(0, 160) : `${when} at ${site.name}.`;
   return { title: e.title, description, openGraph: { title: e.title, description, type: 'website' } };
 }
@@ -48,6 +48,7 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
 
   const live = !e.cancelled && isLive(e, now);
   const end = e.endDate ?? e.startDate;
+  const multiDay = isMultiDay(e);
   const past = !live && new Date(end).getTime() < new Date(now).getTime();
   const counselling = e.eventType?.counselling && !e.cancelled && !past;
   const streamed = !e.cancelled && (e.youtubeUrl || e.facebookUrl);
@@ -56,14 +57,14 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
     <>
       <section className="bg-church">
         <Container className="pt-32 pb-14 sm:pt-40 sm:pb-16">
-          <Link href="/events" className="font-display text-[12px] font-bold uppercase tracking-[0.18em] text-gold-300 hover:text-gold-200">&larr; All events</Link>
+          <Link href="/events" className="inline-flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-gold-300 hover:text-gold-200"><ArrowLeft /> All events</Link>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             {live ? <LiveBadge /> : <Kicker>{e.eventType?.name ?? 'Event'}</Kicker>}
             {e.cancelled && <span className="rounded-sm bg-white px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-crimson-700">Cancelled</span>}
           </div>
           <h1 className="mt-6 max-w-4xl font-heading text-4xl font-semibold leading-[1.05] tracking-tight text-ivory sm:text-5xl lg:text-6xl">{e.title}</h1>
           <p className="mt-6 text-lg text-white/80">
-            {fmtDay(e.startDate)} <span className="text-gold-300">·</span> {hours(e, fmtTime)}
+            {fmtDays(e)} <span className="text-gold-300">·</span> {hours(e, fmtTime)}
           </p>
         </Container>
         <Kente />
@@ -124,7 +125,7 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
               </a>
             )}
             <Detail label="When">
-              {fmtDay(e.startDate)}
+              {fmtDays(e)}
               <span className="block text-ink/60">{hours(e, fmtTime)}</span>
             </Detail>
             <Detail label="Where">
@@ -133,11 +134,11 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
                 Directions <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Detail>
-            {e.sessions.length > 1 && (
-              <Detail label="Times">
+            {(e.sessions.length > 1 || (multiDay && e.sessions.length > 0)) && (
+              <Detail label={multiDay ? 'Each day' : 'Times'}>
                 <ul className="space-y-1">
                   {e.sessions.map((s) => (
-                    <li key={s.name}><span className="font-semibold text-brand-950">{s.name}</span> · {hours(s, fmtTime)}</li>
+                    <li key={s.name}><span className="font-semibold text-brand-950">{s.name}</span> · {multiDay && `${fmtWeekday(s.startDate)} `}{hours(s, fmtTime)}</li>
                   ))}
                 </ul>
               </Detail>

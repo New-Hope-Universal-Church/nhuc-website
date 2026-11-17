@@ -5,7 +5,7 @@ import { excerpt, getDevotional, getDevotionals } from '@/lib/hopeserve';
 import { fmtDay } from '@/lib/format';
 import { site } from '@/lib/site';
 import Markdown from '@/components/Markdown';
-import { ArrowRight, ButtonLink, Container, Kente, Kicker, Scripture } from '@/components/ui';
+import { ArrowLeft, ArrowRight, ButtonLink, Container, Kente, Kicker, Scripture } from '@/components/ui';
 
 /** Recent days are built ahead; older ones are built on first visit. */
 export async function generateStaticParams() {
@@ -57,7 +57,7 @@ async function Devotional({ params }: Pick<PageProps<'/hope/[date]'>, 'params'>)
     <>
       <header className="bg-church">
         <Container className="pt-32 pb-14 sm:pt-40">
-          <Link href="/hope" className="font-display text-[12px] font-bold uppercase tracking-[0.18em] text-gold-300 hover:text-gold-200">&larr; Hope for Today</Link>
+          <Link href="/hope" className="inline-flex items-center gap-2 font-display text-[12px] font-bold uppercase tracking-[0.18em] text-gold-300 hover:text-gold-200"><ArrowLeft /> Hope for Today</Link>
           <div className="mt-6"><Kicker>{fmtDay(`${d.date}T12:00:00Z`)}</Kicker></div>
           <h1 className="mt-5 max-w-3xl font-heading text-4xl font-semibold leading-tight tracking-tight text-ivory sm:text-6xl">{d.title}</h1>
           {d.author && <p className="mt-4 text-white/70">{d.author}</p>}
@@ -95,7 +95,7 @@ async function Devotional({ params }: Pick<PageProps<'/hope/[date]'>, 'params'>)
             <nav aria-label="More devotionals" className="grid gap-3 sm:grid-cols-2">
               {older ? (
                 <Link href={`/hope/${older.date}`} className="group rounded-md bg-white p-5 ring-1 ring-brand-950/10 hover:ring-gold-400">
-                  <span className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-ink/50">&larr; Previous day</span>
+                  <span className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-ink/50"><ArrowLeft className="inline h-3.5 w-3.5" /> Previous day</span>
                   <span className="mt-1 block font-heading text-lg font-semibold text-brand-950">{older.title}</span>
                 </Link>
               ) : <span />}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { streamLink, type ScheduleItem, type UpcomingEvent } from '@/lib/hopeserve';
-import { dateTile, fmtDay, fmtTime } from '@/lib/format';
+import { dateTile, fmtDays, fmtTime, fmtWeekday, isMultiDay } from '@/lib/format';
 import { site } from '@/lib/site';
 import { ArrowRight, Container, Kente, Kicker, Photo, Scripture } from './ui';
 
@@ -47,12 +47,28 @@ export function ServiceTimes({ items, light = false }: { items: ScheduleItem[]; 
   );
 }
 
-/** On now: from 15 minutes before the start until the end (or 3 hours in). */
-export function isLive(e: Pick<UpcomingEvent, 'startDate' | 'endDate'>, nowIso: string): boolean {
-  const now = new Date(nowIso).getTime();
-  const start = new Date(e.startDate).getTime();
-  const end = e.endDate ? new Date(e.endDate).getTime() : start + 3 * 3_600_000;
+const HOUR = 3_600_000;
+const DAY = 24 * HOUR;
+
+/** Is one stretch of time on now? From 15 minutes before the start until the
+ *  end (or 3 hours in). */
+function onNow(startIso: string, endIso: string | null, now: number): boolean {
+  const start = new Date(startIso).getTime();
+  const end = endIso ? new Date(endIso).getTime() : start + 3 * HOUR;
   return now >= start - 15 * 60_000 && now <= end;
+}
+
+/** On now. With sessions, only while a session is on, so a three-day
+ *  program isn't "live" overnight. A program over several days with no
+ *  sessions counts as on for 3 hours from its start time each day. */
+export function isLive(e: Pick<UpcomingEvent, 'startDate' | 'endDate'> & { sessions?: UpcomingEvent['sessions'] }, nowIso: string): boolean {
+  const now = new Date(nowIso).getTime();
+  if (e.sessions?.length) return e.sessions.some((s) => onNow(s.startDate, s.endDate, now));
+  if (!isMultiDay(e)) return onNow(e.startDate, e.endDate, now);
+  if (now > new Date(e.endDate!).getTime()) return false;
+  const start = new Date(e.startDate).getTime();
+  const day = Math.floor((now - start + 15 * 60_000) / DAY);
+  return day >= 0 && onNow(new Date(start + day * DAY).toISOString(), null, now);
 }
 
 /** A pulsing crimson "LIVE NOW" tag. */
@@ -76,6 +92,7 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
   const stream = streamLink(event);
   const live = now ? isLive(event, now) : false;
   const counselling = event.eventType?.counselling;
+  const multiDay = isMultiDay(event);
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10 transition-shadow hover:shadow-[0_14px_32px_-14px_rgba(6,34,20,0.25)] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-gold-400">
       <div className="flex items-stretch">
@@ -84,7 +101,7 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
           <span className="font-display text-3xl font-extrabold leading-none">{tile.day}</span>
         </div>
         <div className="flex flex-1 items-center justify-between gap-3 px-5">
-          <span className="text-sm text-ink/60">{fmtDay(event.startDate)}</span>
+          <span className="text-sm text-ink/60">{fmtDays(event)}</span>
           <span className="font-display text-sm font-bold text-crimson-700">{fmtTime(event.startDate)}</span>
         </div>
       </div>
@@ -100,7 +117,7 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
           <ul className="mt-4 flex flex-wrap gap-2">
             {event.sessions.map((s) => (
               <li key={s.name} className="rounded-sm bg-cream px-2.5 py-1 text-xs text-ink/70">
-                <span className="font-semibold text-brand-950">{s.name}</span> · {fmtTime(s.startDate)}
+                <span className="font-semibold text-brand-950">{s.name}</span> · {multiDay && `${fmtWeekday(s.startDate)} `}{fmtTime(s.startDate)}
               </li>
             ))}
           </ul>
