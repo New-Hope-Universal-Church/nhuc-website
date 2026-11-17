@@ -73,6 +73,21 @@ export function ArrowLeft({ className = 'w-4 h-4' }: { className?: string }) {
   );
 }
 
+const icon = (d: ReactNode) =>
+  function Icon({ className = 'h-4 w-4' }: { className?: string }) {
+    return (
+      <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {d}
+      </svg>
+    );
+  };
+
+export const MapPin = icon(<><path d="M10 18s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" /><circle cx="10" cy="8" r="2.2" /></>);
+export const Clock = icon(<><circle cx="10" cy="10" r="7.5" /><path d="M10 5.5V10l3 2" /></>);
+export const CalendarIcon = icon(<><rect x="3" y="4.5" width="14" height="12.5" rx="2" /><path d="M3 8.5h14M7 2.5v4M13 2.5v4" /></>);
+export const CalendarPlus = icon(<><rect x="3" y="4.5" width="14" height="12.5" rx="2" /><path d="M3 8.5h14M7 2.5v4M13 2.5v4M10 11v4M8 13h4" /></>);
+export const Person = icon(<><circle cx="10" cy="6.5" r="3.2" /><path d="M3.5 17.5c.8-3.3 3.4-5 6.5-5s5.7 1.7 6.5 5" /></>);
+
 // ─── Kente ────────────────────────────────────────────────────────────────────
 
 /** A strip of kente: crimson, gold, green and black. */

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, MotionConfig, motion, useScroll, useTransform } from 'motion/react';
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import { HERO_IMAGE } from '@/lib/images';
 
 /**
  * Motion for the website, built on Framer Motion (the `motion` package).
@@ -13,8 +14,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
-/** The hero photo. Until it is added to public/images the green church background shows. */
-export const HERO_IMAGE = '/images/hero.jpg';
 
 /**
  * The church's call and response, taking turns in the label above the
