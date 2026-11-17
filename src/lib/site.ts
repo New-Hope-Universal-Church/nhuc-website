@@ -80,7 +80,7 @@ export const nav: NavItem[] = [
   {
     label: 'Join Us',
     items: [
-      { href: '/join', label: 'Become part of the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
+      { href: '/join', label: 'Join the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
       { href: '/online', label: 'Online family', blurb: 'Worship with us from anywhere' },
     ],
   },
