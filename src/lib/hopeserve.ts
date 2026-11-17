@@ -1,4 +1,5 @@
 import { cacheLife } from 'next/cache';
+import { fmtWeekday, isMultiDay } from './format';
 
 /**
  * Content from HopeServe's public feed (GET {HOPESERVE_API_URL}/public/...):
@@ -135,10 +136,14 @@ export async function getSchedule(): Promise<ScheduleItem[]> {
   return feed<ScheduleItem[]>('/schedule', []);
 }
 
-export async function getUpcomingEvents(limit = 6): Promise<UpcomingEvent[]> {
+/**
+ * Upcoming church-wide events. `eventsOnly` leaves out the weekly and monthly
+ * services (Sunday Service...), which the site shows as service times.
+ */
+export async function getUpcomingEvents(limit = 6, eventsOnly = false): Promise<UpcomingEvent[]> {
   'use cache';
   cacheLife('minutes');
-  return feed<UpcomingEvent[]>(`/events?limit=${limit}`, []);
+  return feed<UpcomingEvent[]>(`/events?limit=${limit}${eventsOnly ? '&kind=events' : ''}`, []);
 }
 
 /** One church-wide event, past or future, or null. */
@@ -204,9 +209,12 @@ export function streamLink(e: Pick<UpcomingEvent, 'youtubeUrl' | 'facebookUrl'>)
   return null;
 }
 
-/** "9:00 AM to 4:00 PM", or just the start. */
+/** "9:00 AM to 4:00 PM", or just the start. Over several days:
+ *  "6:00 PM Fri to 1:00 PM Sun". */
 export function hours(e: { startDate: string; endDate: string | null }, fmt: (iso: string) => string): string {
-  return e.endDate ? `${fmt(e.startDate)} to ${fmt(e.endDate)}` : fmt(e.startDate);
+  if (!e.endDate) return fmt(e.startDate);
+  if (isMultiDay(e)) return `${fmt(e.startDate)} ${fmtWeekday(e.startDate)} to ${fmt(e.endDate)} ${fmtWeekday(e.endDate)}`;
+  return `${fmt(e.startDate)} to ${fmt(e.endDate)}`;
 }
 
 /** "John 3:16 · Romans 8:28" */

@@ -64,7 +64,7 @@ export default function BookingForm({ days }: { days: DayOption[] }) {
         <legend className={label}>Choose a day</legend>
         <div className="grid gap-3 sm:grid-cols-2">
           {days.map((d) => (
-            <label key={d.id} className="flex cursor-pointer items-start gap-3 rounded-md px-4 py-3.5 ring-1 ring-inset ring-brand-950/15 has-[:checked]:bg-gold-50 has-[:checked]:ring-2 has-[:checked]:ring-gold-400">
+            <label key={d.id} className="flex cursor-pointer items-start gap-3 rounded-md px-4 py-3.5 ring-1 ring-inset ring-brand-950/15 has-checked:bg-gold-50 has-checked:ring-2 has-checked:ring-gold-400">
               <input type="radio" name="eventId" value={d.id} defaultChecked={chosen === d.id} required className="mt-1 accent-brand-700" />
               <span>
                 <span className="block font-semibold text-brand-950">{d.day}</span>
@@ -93,7 +93,7 @@ export default function BookingForm({ days }: { days: DayOption[] }) {
           <textarea id="message" name="message" rows={4} maxLength={1000} defaultValue={v.message} placeholder="Share as much or as little as you like." className={`${input} h-auto py-3`} />
         </div>
         {/* Honeypot: hidden from people, filled in by spam bots. */}
-        <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
           <label htmlFor="website">Leave this empty</label>
           <input id="website" name="website" tabIndex={-1} autoComplete="off" />
         </div>
@@ -109,7 +109,7 @@ export default function BookingForm({ days }: { days: DayOption[] }) {
           disabled={pending}
           className="inline-flex h-12 items-center justify-center rounded-md bg-gold-400 px-7 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-brand-950 transition-colors hover:bg-gold-300 disabled:opacity-60"
         >
-          {pending ? 'Sending…' : 'Put my name down'}
+          {pending ? 'Sending…' : 'Book'}
         </button>
         <p className="text-sm text-ink/55">Then come on the day. You will be seen in the order you arrive.</p>
       </div>
