@@ -34,6 +34,21 @@ export function fmtDays(e: { startDate: string; endDate: string | null }): strin
   return `${start} to ${fmtDay(e.endDate!)}`;
 }
 
+/** Whole calendar days (in Ghana) from `a` to `b`. */
+const daysBetween = (a: string, b: string) => Math.round((Date.parse(dayKey(b)) - Date.parse(dayKey(a))) / 86_400_000);
+
+/** Days from today to the event's day: 0 today, 1 tomorrow, negative if past. */
+export const daysUntil = (iso: string, nowIso: string) => daysBetween(nowIso, iso);
+
+/** Which day of a running program it is, e.g. { day: 3, of: 3 }, or null
+ *  if it isn't a program over several days or isn't running today. */
+export function programDay(e: { startDate: string; endDate: string | null }, nowIso: string): { day: number; of: number } | null {
+  if (!isMultiDay(e)) return null;
+  const of = daysBetween(e.startDate, e.endDate!) + 1;
+  const day = daysBetween(e.startDate, nowIso) + 1;
+  return day >= 1 && day <= of && Date.parse(nowIso) <= Date.parse(e.endDate!) ? { day, of } : null;
+}
+
 /** { month: 'NOV', day: '15' } for a date tile. */
 export const dateTile = (iso: string) => {
   const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, day: 'numeric', month: 'short' }).formatToParts(new Date(iso));
