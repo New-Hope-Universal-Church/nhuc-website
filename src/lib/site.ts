@@ -70,7 +70,7 @@ export const nav: NavItem[] = [
   {
     label: 'Outreach',
     items: [
-      { href: '/hope', label: 'Hope for Today', blurb: 'A word for each day' },
+      { href: '/hope', label: 'Daily Devotional', blurb: 'A word for each day' },
       { href: '/watch', label: 'Sermons', blurb: 'Sermons and live streams' },
       { href: '/announcements', label: 'Announcements', blurb: 'News from the church' },
       { href: '/counselling', label: 'Counselling', blurb: 'Book a time to talk and pray with us' },
@@ -80,7 +80,7 @@ export const nav: NavItem[] = [
   {
     label: 'Join Us',
     items: [
-      { href: '/join', label: 'Become part of the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
+      { href: '/join', label: 'Join the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
       { href: '/online', label: 'Online family', blurb: 'Worship with us from anywhere' },
     ],
   },

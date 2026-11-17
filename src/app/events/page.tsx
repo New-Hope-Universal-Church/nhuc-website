@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function EventsPage() {
-  const events = await getUpcomingEvents(12);
+  const events = await getUpcomingEvents(12, true);
   return (
     <>
-      <PageHero kicker="What's on" title="Events" intro="Services, prayer nights, conferences and fellowship. Everyone is welcome." shot="All Night Service in prayer" />
+      <PageHero kicker="What's on" title="Events" intro="Conferences, programmes and special services. Everyone is welcome." shot="All Night Service in prayer" />
       <section className="py-20 sm:py-28">
         <Container>
           {events.length === 0 ? (

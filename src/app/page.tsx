@@ -1,7 +1,8 @@
 import { excerpt, getLatestDevotional, getLatestSermons, getSchedule, getUpcomingEvents, scriptureLine, streamLink } from '@/lib/hopeserve';
-import { fmtDay, fmtShortDate, fmtTime, nowInGhana, todayInGhana } from '@/lib/format';
+import { fmtDay, fmtDays, fmtShortDate, fmtTime, nowInGhana, todayInGhana } from '@/lib/format';
 import { site } from '@/lib/site';
-import { ArrowRight, ButtonLink, Container, Kente, Kicker, Photo, Scripture, SectionHeading } from '@/components/ui';
+import { ArrowRight, ButtonLink, Container, Kente, Kicker, Scripture, SectionHeading } from '@/components/ui';
+import { Hero, Reveal } from '@/components/motion';
 import { AnchorVerse, EventCard, LiveBadge, MoreLink, ServiceTimes, isLive } from '@/components/sections';
 
 /**
@@ -9,9 +10,10 @@ import { AnchorVerse, EventCard, LiveBadge, MoreLink, ServiceTimes, isLive } fro
  * to come, today's word and the latest sermon, what's next, and counselling.
  */
 export default async function HomePage() {
+  // Services show only under service times; everything else here is events.
   const [schedule, events, sermons, devotional, today, now] = await Promise.all([
     getSchedule(),
-    getUpcomingEvents(3),
+    getUpcomingEvents(3, true),
     getLatestSermons(1),
     getLatestDevotional(),
     todayInGhana(),
@@ -25,61 +27,57 @@ export default async function HomePage() {
   return (
     <>
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-church overflow-hidden">
-        <Container className="grid min-h-[88svh] items-center gap-12 pt-32 pb-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:pt-36">
-          <Photo framed alt="" shot="The Leader ministering, or the congregation in worship" priority sizes="(min-width: 1024px) 35vw, 100vw" className="order-2 mx-auto w-full max-w-sm lg:order-1 lg:max-w-none" />
-          <div className="order-1 lg:order-2">
-            <Kicker>Welcome home</Kicker>
-            <h1 className="mt-7 font-heading text-[clamp(2.4rem,6.2vw,5.25rem)] font-semibold leading-[1.02] tracking-tight text-ivory">
-              Christ in you, <span className="text-gold-300">the Hope of Glory</span>
-            </h1>
-            <Scripture light className="mt-4 text-base">{site.mottoReference}</Scripture>
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/75">
-              A family of believers in {site.address.line1}, {site.address.city}. There is a seat for you here.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/visit" variant="gold">Plan your visit <ArrowRight /></ButtonLink>
-              <ButtonLink href="/watch" variant="outline-light">Watch online</ButtonLink>
+      <Hero
+        headline={['Christ in you,', 'the Hope of Glory']}
+        scripture={site.mottoReference}
+        actions={
+          <>
+            <ButtonLink href="/visit" variant="gold">Plan your visit <ArrowRight /></ButtonLink>
+            <ButtonLink href="/watch" variant="outline-light">Watch online</ButtonLink>
+          </>
+        }
+        footer={
+          <>
+            {next && (
+              <div className="border-t border-white/10 bg-black/30 backdrop-blur-sm">
+              <Container className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                  {live ? <LiveBadge /> : <span className="rounded-sm bg-crimson-600 px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white">Next</span>}
+                  <p className="font-heading text-lg font-semibold text-ivory">{next.title}</p>
+                </div>
+                <p className="text-sm text-white/70">
+                  <span className="text-gold-300">{fmtDays(next)}</span> · {fmtTime(next.startDate)} · {site.address.line1}
+                </p>
+                {nextStream ? (
+                  <a href={nextStream.href} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-gold-300 hover:text-gold-200">
+                    {live ? 'Watch live now' : `Watch live on ${nextStream.label}`} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                ) : (
+                  <MoreLink href="/visit" light>Directions</MoreLink>
+                )}
+              </Container>
             </div>
-          </div>
-        </Container>
-
-        {next && (
-          <div className="border-t border-white/10 bg-black/20">
-            <Container className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4">
-                {live ? <LiveBadge /> : <span className="rounded-sm bg-crimson-600 px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white">Next</span>}
-                <p className="font-heading text-lg font-semibold text-ivory">{next.title}</p>
-              </div>
-              <p className="text-sm text-white/70">
-                <span className="text-gold-300">{fmtDay(next.startDate)}</span> · {fmtTime(next.startDate)} · {site.address.line1}
-              </p>
-              {nextStream ? (
-                <a href={nextStream.href} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-gold-300 hover:text-gold-200">
-                  {live ? 'Watch live now' : `Watch live on ${nextStream.label}`} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </a>
-              ) : (
-                <MoreLink href="/visit" light>Directions</MoreLink>
-              )}
-            </Container>
-          </div>
-        )}
-        <Kente />
-      </section>
+            )}
+            <Kente />
+          </>
+        }
+      />
 
       <AnchorVerse />
 
       {/* ─── Service times ────────────────────────────────────────────────── */}
       <section className="py-24 sm:py-28">
         <Container className="grid gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
-          <div>
+          <Reveal>
             <SectionHeading kicker="Gather with us" title="Service times" intro="Come as you are. Our ushers will help you find a seat." />
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <ButtonLink href="/visit" variant="dark">Plan your visit</ButtonLink>
               <ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="outline-dark">Get directions</ButtonLink>
             </div>
-          </div>
-          {schedule.length ? <ServiceTimes items={schedule} /> : <p className="self-center text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
+          </Reveal>
+          <Reveal delay={0.15} className="self-center">
+            {schedule.length ? <ServiceTimes items={schedule} /> : <p className="text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
+          </Reveal>
         </Container>
       </section>
 
@@ -88,7 +86,8 @@ export default async function HomePage() {
         <section className="bg-white py-24 sm:py-28">
           <Container className="grid gap-6 lg:grid-cols-2">
             {devotional && (
-              <article className="flex flex-col overflow-hidden rounded-md bg-cream ring-1 ring-brand-950/10">
+              <Reveal className="flex">
+              <article className="flex w-full flex-col overflow-hidden rounded-md bg-cream ring-1 ring-brand-950/10">
                 <Kente />
                 <div className="flex flex-1 flex-col p-8 sm:p-10">
                   <Kicker>Hope for Today</Kicker>
@@ -101,9 +100,11 @@ export default async function HomePage() {
                   </div>
                 </div>
               </article>
+              </Reveal>
             )}
             {sermon && (
-              <article className="flex flex-col overflow-hidden rounded-md bg-church text-white">
+              <Reveal delay={0.12} className="flex">
+              <article className="flex w-full flex-col overflow-hidden rounded-md bg-church text-white">
                 <Kente />
                 <div className="flex flex-1 flex-col p-8 sm:p-10">
                   <Kicker>Latest sermon</Kicker>
@@ -119,6 +120,7 @@ export default async function HomePage() {
                   </div>
                 </div>
               </article>
+              </Reveal>
             )}
           </Container>
         </section>
@@ -132,7 +134,11 @@ export default async function HomePage() {
             <MoreLink href="/events">All events</MoreLink>
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {events.map((e) => <EventCard key={e.id} event={e} now={now} />)}
+            {events.map((e, i) => (
+              <Reveal key={e.id} delay={i * 0.1} className="flex [&>*]:w-full">
+                <EventCard event={e} now={now} />
+              </Reveal>
+            ))}
             {events.length === 0 && <p className="text-lg text-ink/60 md:col-span-3">Nothing is scheduled just now. Check back soon.</p>}
           </div>
         </Container>
@@ -141,7 +147,7 @@ export default async function HomePage() {
       {/* ─── Counselling ──────────────────────────────────────────────────── */}
       <section className="pb-24 sm:pb-28">
         <Container>
-          <div className="overflow-hidden rounded-md bg-church">
+          <Reveal className="overflow-hidden rounded-md bg-church">
             <Kente />
             <div className="flex flex-col items-start gap-8 p-8 sm:p-14 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-xl">
@@ -151,7 +157,7 @@ export default async function HomePage() {
               </div>
               <ButtonLink href="/counselling" variant="gold" className="flex-shrink-0">Put my name down <ArrowRight /></ButtonLink>
             </div>
-          </div>
+          </Reveal>
         </Container>
       </section>
     </>
