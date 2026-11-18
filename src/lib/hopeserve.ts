@@ -148,6 +148,13 @@ export async function getUpcomingEvents(limit = 6, eventsOnly = false): Promise<
   return feed<UpcomingEvent[]>(`/events?limit=${limit}${eventsOnly ? '&kind=events' : ''}`, []);
 }
 
+/** Events that have taken place, newest first (services left out). */
+export async function getPastEvents(limit = 6): Promise<UpcomingEvent[]> {
+  'use cache';
+  cacheLife('minutes');
+  return feed<UpcomingEvent[]>(`/events/past?limit=${limit}`, []);
+}
+
 /** One church-wide event, past or future, or null. */
 export async function getEvent(id: string): Promise<UpcomingEvent | null> {
   'use cache';
