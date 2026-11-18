@@ -3,7 +3,8 @@
 # updates by itself: after every merge to main, this pushes main to it.
 #
 # Needs the secret VERCEL_COPY_TOKEN: a fine-grained token from the nhucdev
-# account, for the nhuc-website-forked repo only, with Contents: Read and write.
+# account, for the nhuc-website-forked repo only, with Contents and Workflows:
+# Read and write (Workflows because this file is pushed to the copy too).
 
 name: Sync Vercel copy
 
@@ -21,6 +22,8 @@ permissions:
 
 jobs:
   sync:
+    # The copy gets this file too; it has nothing to sync.
+    if: github.repository == 'New-Hope-Universal-Church/nhuc-website'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
