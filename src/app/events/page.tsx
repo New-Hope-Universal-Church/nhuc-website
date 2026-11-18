@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { getUpcomingEvents } from '@/lib/hopeserve';
-import { nowInGhana } from '@/lib/format';
+import Link from 'next/link';
+import { getPastEvents, getUpcomingEvents } from '@/lib/hopeserve';
+import { fmtShortDate, nowInGhana } from '@/lib/format';
 import { EVENTS_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
 import { Container, SectionHeading } from '@/components/ui';
@@ -25,10 +26,29 @@ function Grid({ events, now }: { events: UpcomingEvent[]; now: string }) {
   );
 }
 
+/** A past event as a small row: when, what, where. Opens its page. */
+function PastEvent({ event }: { event: UpcomingEvent }) {
+  return (
+    <Link href={`/events/${event.id}`} className="group flex items-center gap-4 rounded-md bg-white p-3 ring-1 ring-brand-950/10 transition-shadow hover:shadow-[0_10px_24px_-14px_rgba(6,34,20,0.25)] focus-visible:outline-2 focus-visible:outline-gold-400">
+      <div className="relative size-16 shrink-0 overflow-hidden rounded-sm bg-church">
+        {event.flyerUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={event.flyerUrl} alt="" loading="lazy" className="size-full object-cover grayscale-[40%] transition group-hover:grayscale-0" />
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-medium uppercase tracking-[0.15em] text-ink/50">{fmtShortDate(event.startDate)}</p>
+        <h3 className="mt-0.5 truncate font-heading text-lg font-semibold text-brand-950 group-hover:underline">{event.title}</h3>
+        {event.location && <p className="truncate text-sm text-ink/60">{event.location}</p>}
+      </div>
+    </Link>
+  );
+}
+
 /** Events: what's running now (a program partway through, or live), then
  *  what's coming up. Weekly services are under service times instead. */
 export default async function EventsPage() {
-  const [events, now] = await Promise.all([getUpcomingEvents(24, true), nowInGhana()]);
+  const [events, past, now] = await Promise.all([getUpcomingEvents(24, true), getPastEvents(6), nowInGhana()]);
   const t = Date.parse(now);
   const running = events.filter((e) => Date.parse(e.startDate) <= t);
   const upcoming = events.filter((e) => Date.parse(e.startDate) > t);
@@ -58,6 +78,17 @@ export default async function EventsPage() {
           )}
         </Container>
       </section>
+
+      {past.length > 0 && (
+        <section className="border-t border-brand-950/10 bg-cream/60 py-16 sm:py-20">
+          <Container>
+            <SectionHeading kicker="Looking back" title="Past events" />
+            <div className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {past.map((e) => <PastEvent key={e.id} event={e} />)}
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 }
