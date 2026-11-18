@@ -19,9 +19,21 @@ export const fmtWeekday = (iso: string) =>
 /** "2026-12-12", the calendar day in Ghana. */
 const dayKey = (iso: string) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date(iso));
 
-/** Does it end on a later day than it starts (a two or three day program)? */
+/** Hour of the day in Ghana, 0-23. */
+const hourOf = (iso: string) => Number(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', hourCycle: 'h23' }).format(new Date(iso)));
+
+/** One night that runs past midnight, like an All Night service (Friday
+ *  9:00 PM to Saturday 4:00 AM): it ends the next morning, before noon. */
+export const isOvernight = (e: { startDate: string; endDate: string | null }) =>
+  !!e.endDate &&
+  Date.parse(e.endDate) - Date.parse(e.startDate) < 86_400_000 &&
+  dayKey(e.endDate) !== dayKey(e.startDate) &&
+  hourOf(e.endDate) < 12;
+
+/** Does it run over several days (a two or three day program)? An overnight
+ *  service isn't: it's one night. */
 export const isMultiDay = (e: { startDate: string; endDate: string | null }) =>
-  !!e.endDate && dayKey(e.endDate) !== dayKey(e.startDate);
+  !!e.endDate && dayKey(e.endDate) !== dayKey(e.startDate) && !isOvernight(e);
 
 /** "Friday 12 December", or for a program over several days
  *  "Friday 12 to Sunday 14 December" / "Sunday 30 November to Tuesday 2 December". */
