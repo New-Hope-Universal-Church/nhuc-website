@@ -1,0 +1,42 @@
+# Vercel builds the website from a public copy of this repo
+# (nhucdev/nhuc-website-forked). The copy isn't a GitHub fork, so it never
+# updates by itself: after every merge to main, this pushes main to it.
+#
+# Needs the secret VERCEL_COPY_TOKEN: a fine-grained token from the nhucdev
+# account, for the nhuc-website-forked repo only, with Contents: Read and write.
+
+name: Sync Vercel copy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-vercel-copy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Otherwise this repo's own token is used for every push to github.com.
+          persist-credentials: false
+
+      - name: Push main to the copy
+        env:
+          TOKEN: ${{ secrets.VERCEL_COPY_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::The VERCEL_COPY_TOKEN secret is missing."
+            exit 1
+          fi
+          # No --force: if the copy has commits of its own, this fails instead
+          # of throwing them away.
+          git push "https://nhucdev:${TOKEN}@github.com/nhucdev/nhuc-website-forked.git" HEAD:main
