@@ -38,7 +38,7 @@ export default async function JoinPage() {
             ))}
             <div className="border-t border-brand-950/10 pt-6">
               <p className="text-ink/65">Far away, or can&apos;t make it in person?</p>
-              <div className="mt-3"><MoreLink href="/online">Join our online family</MoreLink></div>
+              <div className="mt-3"><MoreLink href="/watch#online">Join our online family</MoreLink></div>
             </div>
           </aside>
         </Container>

@@ -93,7 +93,7 @@ export default async function HomePage() {
                   <Kicker>Hope for Today</Kicker>
                   <p className="mt-4 text-sm text-ink/50">{fmtDay(`${devotional.date}T12:00:00Z`)}</p>
                   <h2 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-brand-950">{devotional.title}</h2>
-                  {devotional.scripture && <Scripture className="mt-2 !text-crimson-700">{devotional.scripture}</Scripture>}
+                  {devotional.scripture && <Scripture className="mt-2 text-crimson-700!">{devotional.scripture}</Scripture>}
                   <p className="mt-5 flex-1 leading-relaxed text-ink/75">{excerpt(devotional, 180)}</p>
                   <div className="mt-7">
                     <ButtonLink href={`/hope/${devotional.date}`} variant="dark">{devotional.date === today ? 'Read today’s devotional' : 'Read the latest devotional'}</ButtonLink>
@@ -135,7 +135,7 @@ export default async function HomePage() {
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {events.map((e, i) => (
-              <Reveal key={e.id} delay={i * 0.1} className="flex [&>*]:w-full">
+              <Reveal key={e.id} delay={i * 0.1} className="flex *:w-full">
                 <EventCard event={e} now={now} />
               </Reveal>
             ))}
@@ -153,9 +153,9 @@ export default async function HomePage() {
               <div className="max-w-xl">
                 <Kicker>Counselling</Kicker>
                 <h2 className="mt-5 font-heading text-3xl font-semibold leading-tight tracking-tight text-ivory sm:text-4xl">Need someone to talk to and pray with?</h2>
-                <p className="mt-4 text-lg text-white/75">Put your name down for a counselling day, then come and see the Leader. Confidential.</p>
+                <p className="mt-4 text-lg text-white/75">Book a counselling session on one of the next counselling days, then come and see the Leader. Confidential.</p>
               </div>
-              <ButtonLink href="/counselling" variant="gold" className="flex-shrink-0">Put my name down <ArrowRight /></ButtonLink>
+              <ButtonLink href="/counselling" variant="gold" className="shrink-0">Book a session <ArrowRight /></ButtonLink>
             </div>
           </Reveal>
         </Container>

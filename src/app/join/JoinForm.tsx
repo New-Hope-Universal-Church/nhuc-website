@@ -39,7 +39,7 @@ export default function JoinForm({ minDate }: { minDate: string }) {
         <h2 className="mt-3 font-heading text-3xl font-semibold text-brand-950">Thank you, {state.name}.</h2>
         <p className="mt-3 text-lg text-ink/70">{THANKS[state.intent]}</p>
         <p className="mt-6">
-          <Link href="/online" className="font-semibold text-crimson-700 hover:text-crimson-800">Follow us online in the meantime</Link>
+          <Link href="/watch#online" className="font-semibold text-crimson-700 hover:text-crimson-800">Follow us online in the meantime</Link>
         </p>
       </div>
     );
