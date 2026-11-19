@@ -176,6 +176,12 @@ export async function getLatestSermons(limit = 12): Promise<Sermon[]> {
   return feed<Sermon[]>(`/sermons?limit=${limit}`, []);
 }
 
+/** One sermon, or null. Looked up in the recent ones (the feed has no
+ *  single-sermon endpoint; 100 is far more than the page lists). */
+export async function getSermon(id: string): Promise<Sermon | null> {
+  return (await getLatestSermons(100)).find((s) => s.id === id) ?? null;
+}
+
 /** Current announcements chosen for the website, pinned first. */
 export async function getAnnouncements(limit = 20): Promise<Announcement[]> {
   'use cache';

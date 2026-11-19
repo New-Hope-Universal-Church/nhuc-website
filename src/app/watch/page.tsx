@@ -1,56 +1,30 @@
 import type { Metadata } from 'next';
-import { getLatestSermons, getUpcomingEvents, scriptureLine, streamLink, type Sermon } from '@/lib/hopeserve';
+import Link from 'next/link';
+import { getLatestSermons, getUpcomingEvents, scriptureLine, streamLink } from '@/lib/hopeserve';
 import { fmtDay, fmtShortDate, fmtTime, nowInGhana } from '@/lib/format';
+import { SERMONS_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
-import Markdown from '@/components/Markdown';
-import { Container, Kicker, Photo } from '@/components/ui';
-import { LiveBadge, PageHero, isLive } from '@/components/sections';
+import { ArrowRight, Container, Kicker } from '@/components/ui';
+import { LiveBadge, PhotoBanner, isLive } from '@/components/sections';
+import { SermonVideo, WatchLinks } from '@/components/sermons';
+import SermonLibrary from './SermonLibrary';
 
 export const metadata: Metadata = {
-  title: 'Watch',
+  title: 'Sermons',
   description: `Sermons and messages from ${site.name}.`,
 };
 
-/** The video id from a YouTube link (watch, youtu.be, live or shorts). */
-function youtubeId(url: string | null): string | null {
-  if (!url) return null;
-  const m = url.match(/(?:youtu\.be\/|[?&]v=|\/(?:live|shorts|embed)\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
-
-function Thumbnail({ sermon, className, sizes }: { sermon: Sermon; className: string; sizes?: string }) {
-  const id = youtubeId(sermon.youtubeUrl);
-  return <Photo src={id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : undefined} alt={sermon.title} shot="Sermon video thumbnail" className={className} sizes={sizes} />;
-}
-
-function WatchLinks({ sermon }: { sermon: Sermon }) {
-  const links = [
-    sermon.youtubeUrl && { href: sermon.youtubeUrl, label: 'Watch on YouTube', cls: 'bg-crimson-600 hover:bg-crimson-700 text-white' },
-    sermon.facebookUrl && { href: sermon.facebookUrl, label: 'Watch on Facebook', cls: 'bg-[#1d5fbf] hover:bg-[#184f9f] text-white' },
-    sermon.otherUrl && { href: sermon.otherUrl, label: 'Listen / more', cls: 'bg-brand-950 hover:bg-brand-900 text-white' },
-  ].filter(Boolean) as { href: string; label: string; cls: string }[];
-  if (!links.length) return null;
-  return (
-    <div className="mt-6 flex flex-wrap gap-2">
-      {links.map((l) => (
-        <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className={`inline-flex h-11 items-center rounded-md px-5 font-display text-[12px] font-bold uppercase tracking-[0.14em] transition-colors ${l.cls}`}>
-          {l.label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
 export default async function WatchPage() {
-  const [sermons, events, now] = await Promise.all([getLatestSermons(24), getUpcomingEvents(10), nowInGhana()]);
-  const [latest, ...rest] = sermons;
+  const [sermons, events, now] = await Promise.all([getLatestSermons(100), getUpcomingEvents(10), nowInGhana()]);
+  const latest = sermons[0];
+  const library = sermons.map((s) => ({ ...s, dateLabel: fmtShortDate(s.date) }));
   // The next service that is streamed, and whether it is on right now.
   const streamed = events.find((e) => streamLink(e));
   const stream = streamed ? streamLink(streamed) : null;
   const live = streamed ? isLive(streamed, now) : false;
   return (
     <>
-      <PageHero kicker="Sermons" title="Hear the Word" intro="Missed a Sunday, or want to hear it again? Watch and listen to recent messages." shot="The Leader preaching" />
+      <PhotoBanner kicker="Sermons" title="Hear the Word" intro="Missed a Sunday, or want to hear it again? Watch and listen to every message." src={SERMONS_IMAGE} />
 
       {streamed && stream && (
         <section className="pt-16 sm:pt-20">
@@ -85,44 +59,32 @@ export default async function WatchPage() {
       )}
 
       {latest && (
-        <section className="py-20 sm:py-28">
-          <Container className="grid items-center gap-12 lg:grid-cols-[1.3fr_1fr]">
-            <a href={latest.youtubeUrl ?? latest.facebookUrl ?? undefined} target="_blank" rel="noreferrer" className="block">
-              <Thumbnail sermon={latest} className="aspect-video rounded-md ring-[5px] ring-gold-400" sizes="(min-width: 1024px) 55vw, 100vw" />
-            </a>
+        <section className="py-16 sm:py-24">
+          <Container className="grid items-center gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-14">
+            <div className="relative">
+              <span className="absolute -top-3 left-4 z-10 rounded-sm bg-crimson-600 px-3 py-1 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow">Latest</span>
+              <SermonVideo sermon={latest} />
+            </div>
             <div>
-              <Kicker>Latest message</Kicker>
+              <Kicker>{latest.series ?? 'Latest message'}</Kicker>
               <h2 className="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight text-brand-950 sm:text-5xl">{latest.title}</h2>
-              <p className="mt-4 text-ink/60">{latest.preacher} · {fmtShortDate(latest.date)}{latest.series ? ` · ${latest.series}` : ''}</p>
+              <p className="mt-4 text-ink/60">{latest.preacher} · {fmtShortDate(latest.date)}</p>
               {latest.scriptures.length > 0 && <p className="mt-1 font-serif italic text-crimson-700">{scriptureLine(latest)}</p>}
-              {latest.notes && <Markdown text={latest.notes} className="mt-5 space-y-3 text-ink/75 line-clamp-6" />}
-              <WatchLinks sermon={latest} />
+              <WatchLinks sermon={latest} className="mt-6" />
+              <Link href={`/watch/${latest.id}`} className="group mt-6 inline-flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
+                {latest.notes ? 'Read the notes' : 'Open the sermon'} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
           </Container>
         </section>
       )}
 
-      {rest.length > 0 && (
-        <section className="pb-24 sm:pb-32">
+      {sermons.length > 1 && (
+        <section className="border-t border-brand-950/10 bg-white py-16 sm:py-24">
           <Container>
-            <h2 className="font-heading text-3xl font-semibold tracking-tight text-brand-950">More messages</h2>
-            <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-              {rest.map((s) => {
-                const href = s.youtubeUrl ?? s.facebookUrl ?? s.otherUrl;
-                const body = (
-                  <>
-                    <Thumbnail sermon={s} className="aspect-video rounded-md" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
-                    <h3 className="mt-4 font-heading text-xl font-semibold tracking-tight text-brand-950 group-hover:text-brand-700">{s.title}</h3>
-                    <p className="mt-1 text-sm text-ink/55">{s.preacher} · {fmtShortDate(s.date)}</p>
-                    {s.scriptures.length > 0 && <p className="text-sm text-crimson-700">{scriptureLine(s)}</p>}
-                  </>
-                );
-                return (
-                  <article key={s.id}>
-                    {href ? <a href={href} target="_blank" rel="noreferrer" className="group block">{body}</a> : body}
-                  </article>
-                );
-              })}
+            <h2 className="text-center font-heading text-3xl font-semibold tracking-tight text-brand-950 sm:text-4xl">All sermons</h2>
+            <div className="mt-8">
+              <SermonLibrary sermons={library} />
             </div>
           </Container>
         </section>

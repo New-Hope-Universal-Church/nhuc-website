@@ -5,3 +5,5 @@
 export const HERO_IMAGE = '/images/hero.jpg';
 /** The banner on the Events page. Falls back to the hero photo's spot. */
 export const EVENTS_IMAGE = '/images/events.jpg';
+/** The banner on the Sermons page. Falls back to the hero photo's spot. */
+export const SERMONS_IMAGE = '/images/sermons.jpg';
