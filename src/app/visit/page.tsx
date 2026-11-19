@@ -3,10 +3,11 @@ import { getSchedule } from '@/lib/hopeserve';
 import { site } from '@/lib/site';
 import { ButtonLink, Container, Kicker, Photo, SectionHeading } from '@/components/ui';
 import { PageHero, ServiceTimes } from '@/components/sections';
+import SocialLinks, { hasSocials } from '@/components/SocialLinks';
 
 export const metadata: Metadata = {
-  title: 'Plan your visit',
-  description: `Service times and directions for ${site.name}, ${site.address.line1}, ${site.address.city}.`,
+  title: 'Visit us',
+  description: `Service times, directions and how to reach ${site.name}, ${site.address.line1}, ${site.address.city}.`,
 };
 
 const EXPECT = [
@@ -18,6 +19,10 @@ const EXPECT = [
 
 export default async function VisitPage() {
   const schedule = await getSchedule();
+  const channels = [
+    site.phone && { label: 'Call or WhatsApp', value: site.phone, href: `tel:${site.phone.replace(/\s/g, '')}` },
+    site.email && { label: 'Email', value: site.email, href: `mailto:${site.email}` },
+  ].filter(Boolean) as { label: string; value: string; href: string }[];
   return (
     <>
       <PageHero kicker="Plan your visit" title="We saved you a seat" intro="Whether it is your first time in church or your first time with us, we would love to meet you." shot="Ushers welcoming people at the entrance" />
@@ -29,16 +34,31 @@ export default async function VisitPage() {
         </Container>
       </section>
 
-      <section className="bg-white py-24 sm:py-32">
+      <section id="contact" className="scroll-mt-24 bg-white py-24 sm:py-32">
         <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <SectionHeading kicker="Where" title="Find us" />
             <address className="mt-8 not-italic font-heading text-2xl font-semibold leading-snug tracking-tight text-brand-950">
               {site.address.line1}<br />{site.address.city}, {site.address.country}
             </address>
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="gold">Get directions</ButtonLink>
-              <ButtonLink href="/contact" variant="outline-dark">Contact us</ButtonLink>
+            <div className="mt-8"><ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="gold">Get directions</ButtonLink></div>
+
+            <div className="mt-12 border-t border-brand-950/10 pt-8">
+              <Kicker>Reach us</Kicker>
+              <p className="mt-4 text-ink/65">Prayer requests, questions about the church, or help finding your way to us.</p>
+              {channels.length ? (
+                <ul className="mt-5 grid gap-5 sm:grid-cols-2">
+                  {channels.map((c) => (
+                    <li key={c.label}>
+                      <p className="text-sm text-ink/55">{c.label}</p>
+                      <a href={c.href} className="font-heading text-xl font-semibold tracking-tight text-brand-950 hover:text-brand-700">{c.value}</a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-3 text-ink/65">Phone and email details are coming soon. Until then, please speak to an usher at any service.</p>
+              )}
+              {hasSocials() && <SocialLinks className="mt-6" />}
             </div>
           </div>
           <Photo alt="" shot="The church entrance and signboard" className="aspect-[4/3] rounded-md" />
