@@ -1,18 +1,39 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
-import { getPastEvents, getUpcomingEvents } from '@/lib/hopeserve';
-import { fmtShortDate, nowInGhana } from '@/lib/format';
+import { getAnnouncements, getPastEvents, getUpcomingEvents, type Announcement } from '@/lib/hopeserve';
+import { fmtDay, fmtShortDate, nowInGhana } from '@/lib/format';
+import Markdown from '@/components/Markdown';
 import { EVENTS_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
-import { Container, SectionHeading } from '@/components/ui';
+import { Container, Kicker, SectionHeading } from '@/components/ui';
 import { Reveal } from '@/components/motion';
 import { EventCard, PhotoBanner } from '@/components/sections';
 import type { UpcomingEvent } from '@/lib/hopeserve';
 
 export const metadata: Metadata = {
-  title: 'Events',
-  description: `What's coming up at ${site.name}.`,
+  title: "What's on",
+  description: `Events, programmes and church news from ${site.name}.`,
 };
+
+/** One church notice: its picture if it has one, the date, title and text. */
+function Notice({ a }: { a: Announcement }) {
+  return (
+    <article className="mb-6 flex break-inside-avoid flex-col overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10">
+      {a.imageUrl && (
+        <Image src={a.imageUrl} alt={a.title} width={1200} height={800} sizes="(min-width: 768px) 50vw, 100vw" className="h-auto max-h-80 w-full bg-cream object-contain" />
+      )}
+      <div className="p-6 sm:p-8">
+        <div className="flex flex-wrap items-center gap-3">
+          {a.pinned && <Kicker>Important</Kicker>}
+          <p className="text-sm text-ink/55">{fmtDay(a.date)}</p>
+        </div>
+        <h3 className="mt-2 font-heading text-2xl font-semibold leading-tight text-brand-950">{a.title}</h3>
+        <Markdown text={a.body} className="mt-3 space-y-3 leading-relaxed text-ink/75" />
+      </div>
+    </article>
+  );
+}
 
 function Grid({ events, now }: { events: UpcomingEvent[]; now: string }) {
   return (
@@ -45,17 +66,18 @@ function PastEvent({ event }: { event: UpcomingEvent }) {
   );
 }
 
-/** Events: what's running now (a program partway through, or live), then
- *  what's coming up. Weekly services are under service times instead. */
+/** What's on: what's running now (a program partway through, or live),
+ *  what's coming up, church news, then past events. Weekly services are
+ *  under service times instead. */
 export default async function EventsPage() {
-  const [events, past, now] = await Promise.all([getUpcomingEvents(24, true), getPastEvents(6), nowInGhana()]);
+  const [events, past, news, now] = await Promise.all([getUpcomingEvents(24, true), getPastEvents(6), getAnnouncements(), nowInGhana()]);
   const t = Date.parse(now);
   const running = events.filter((e) => Date.parse(e.startDate) <= t);
   const upcoming = events.filter((e) => Date.parse(e.startDate) > t);
 
   return (
     <>
-      <PhotoBanner kicker="What's on" title="Events" intro="Conventions, programmes and special services. Everyone is welcome." src={EVENTS_IMAGE} />
+      <PhotoBanner kicker="What's on" title="Events and news" intro="Conventions, programmes, special services and notices from the church. Everyone is welcome." src={EVENTS_IMAGE} />
 
       {running.length > 0 && (
         <section className="pt-20 sm:pt-24">
@@ -78,6 +100,17 @@ export default async function EventsPage() {
           )}
         </Container>
       </section>
+
+      {news.length > 0 && (
+        <section id="news" className="scroll-mt-24 border-t border-brand-950/10 bg-white py-16 sm:py-20">
+          <Container>
+            <SectionHeading kicker="Church news" title="Announcements" />
+            <div className="mt-8 gap-6 md:columns-2">
+              {news.map((a) => <Notice key={a.id} a={a} />)}
+            </div>
+          </Container>
+        </section>
+      )}
 
       {past.length > 0 && (
         <section className="border-t border-brand-950/10 bg-cream/60 py-16 sm:py-20">

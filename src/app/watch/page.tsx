@@ -4,20 +4,31 @@ import { getLatestSermons, getUpcomingEvents, scriptureLine, streamLink } from '
 import { fmtDay, fmtShortDate, fmtTime, nowInGhana } from '@/lib/format';
 import { SERMONS_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
-import { ArrowRight, Container, Kicker } from '@/components/ui';
+import { NETWORKS } from '@/components/SocialLinks';
+import { ArrowRight, ButtonLink, Container, Kicker } from '@/components/ui';
 import { LiveBadge, PhotoBanner, isLive } from '@/components/sections';
 import { SermonVideo, WatchLinks } from '@/components/sermons';
 import SermonLibrary from './SermonLibrary';
 
 export const metadata: Metadata = {
   title: 'Sermons',
-  description: `Sermons and messages from ${site.name}.`,
+  description: `Sermons, live services and our online family at ${site.name}: worship with us from anywhere.`,
+};
+
+/** What each channel invites you to do. */
+const ACTION: Record<string, string> = {
+  youtube: 'Subscribe and watch services live',
+  facebook: 'Follow and join us live',
+  tiktok: 'Short clips from services',
+  instagram: 'Photos and updates',
+  whatsapp: 'Join our WhatsApp channel',
 };
 
 export default async function WatchPage() {
   const [sermons, events, now] = await Promise.all([getLatestSermons(100), getUpcomingEvents(10), nowInGhana()]);
   const latest = sermons[0];
   const library = sermons.map((s) => ({ ...s, dateLabel: fmtShortDate(s.date) }));
+  const channels = NETWORKS.filter((n) => site.social[n.key]);
   // The next service that is streamed, and whether it is on right now.
   const streamed = events.find((e) => streamLink(e));
   const stream = streamed ? streamLink(streamed) : null;
@@ -89,6 +100,37 @@ export default async function WatchPage() {
           </Container>
         </section>
       )}
+      <section id="online" className="scroll-mt-24 bg-church py-20 sm:py-24">
+        <Container>
+          <Kicker>Online family</Kicker>
+          <h2 className="mt-5 max-w-3xl font-heading text-3xl font-semibold leading-tight tracking-tight text-ivory sm:text-4xl">Worship with us from anywhere</h2>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/75">
+            Travelling, living abroad, or unable to come in person? You are still part of the family. Watch live, read{' '}
+            <Link href="/hope" className="text-gold-300 underline-offset-4 hover:underline">Hope for Today</Link>, and stay close.
+          </p>
+          {channels.length > 0 && (
+            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {channels.map((n) => (
+                <li key={n.key}>
+                  <a href={site.social[n.key]} target="_blank" rel="noreferrer" className="group flex items-center gap-4 rounded-md bg-white/5 p-5 ring-1 ring-white/10 transition-colors hover:bg-white/10">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gold-400 text-brand-950">
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={n.path} /></svg>
+                    </span>
+                    <span>
+                      <span className="block font-heading text-xl font-semibold text-ivory">{n.label}</span>
+                      <span className="block text-sm text-white/60">{ACTION[n.key]}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="mt-10 flex flex-col items-start gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-lg text-white/80">Part of our online family? Tell us who you are, so we can pray for you and keep in touch.</p>
+            <ButtonLink href="/join" variant="gold">Let us know <ArrowRight /></ButtonLink>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

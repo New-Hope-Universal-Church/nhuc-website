@@ -61,8 +61,9 @@ export interface NavLink {
 }
 export type NavItem = NavLink | { label: string; items: NavLink[] };
 
-/** The main menu. "Outreach" mirrors HopeServe's Outreach section;
- *  "Join Us" groups signing up and following online. */
+/** The main menu. "Outreach" mirrors HopeServe's Outreach section. Visit
+ *  holds contact details, What's on holds announcements, and Sermons holds
+ *  the online family (their old addresses redirect, see next.config.ts). */
 export const nav: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
@@ -71,21 +72,13 @@ export const nav: NavItem[] = [
     label: 'Outreach',
     items: [
       { href: '/hope', label: 'Daily Devotional', blurb: 'A word for each day' },
-      { href: '/watch', label: 'Sermons', blurb: 'Sermons and live streams' },
-      { href: '/announcements', label: 'Announcements', blurb: 'News from the church' },
-      { href: '/counselling', label: 'Counselling', blurb: 'Book a time to talk and pray with us' },
+      { href: '/watch', label: 'Sermons', blurb: 'Sermons, live streams and our online family' },
+      { href: '/counselling', label: 'Counselling', blurb: 'Book a session to talk and pray with us' },
     ],
   },
-  { href: '/events', label: 'Events' },
-  {
-    label: 'Join Us',
-    items: [
-      { href: '/join', label: 'Join the family', blurb: 'Become a member, plan a visit, or tell us you are new to faith' },
-      { href: '/online', label: 'Online family', blurb: 'Worship with us from anywhere' },
-    ],
-  },
-  { href: '/contact', label: 'Contact' },
+  { href: '/events', label: "What's on" },
+  { href: '/join', label: 'Join us' },
 ];
 
-/** Every page in the menu, groups opened up (for the footer). */
-export const navLinks: NavLink[] = nav.flatMap((i) => ('items' in i ? i.items : [i]));
+/** Every page in the menu but Home, groups opened up (for the footer). */
+export const navLinks: NavLink[] = nav.flatMap((i) => ('items' in i ? i.items : [i])).filter((l) => l.href !== '/');
