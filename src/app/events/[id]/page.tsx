@@ -152,12 +152,12 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
             {counselling && (
               <div className="mt-12 rounded-md bg-white p-7 ring-1 ring-brand-950/10 sm:p-9">
                 <Kicker>Counselling</Kicker>
-                <h2 className="mt-4 font-heading text-2xl font-semibold text-brand-950">Put your name down for this day</h2>
+                <h2 className="mt-4 font-heading text-2xl font-semibold text-brand-950">Book a session on this day</h2>
                 <p className="mt-3 text-lg leading-relaxed text-ink/70">
-                  Add your name to the list, then come to the church any time between {hours(e, fmtTime).replace(' to ', ' and ')}.
+                  Book a session, then come to the church any time between {hours(e, fmtTime).replace(' to ', ' and ')}.
                   You will be seen in the order you arrive.
                 </p>
-                <div className="mt-6"><ButtonLink href={`/counselling?day=${e.id}`}>Put my name down</ButtonLink></div>
+                <div className="mt-6"><ButtonLink href={`/counselling?day=${e.id}`}>Book a session</ButtonLink></div>
               </div>
             )}
           </div>

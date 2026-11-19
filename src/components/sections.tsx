@@ -208,7 +208,7 @@ export function EventCard({ event, now }: { event: UpcomingEvent; now?: string }
             )}
             {counselling && (
               <Link href={`/counselling?day=${event.id}`} className="inline-flex items-center gap-1.5 font-display text-[12px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
-                Put your name down <ArrowRight className="h-3.5 w-3.5" />
+                Book a session <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             )}
           </div>

@@ -3,16 +3,17 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { nav, type NavLink } from '@/lib/site';
 import { Logo } from './ui';
 
 /**
  * A floating header: a rounded bar held away from the page edges. Dark glass
  * over each page's green header, light glass once the page scrolls. On
- * phones the menu drops down from the bar as a floating panel.
+ * phones the menu drops down from the bar as a floating panel. Under the
+ * bar, the service times (`services`) until the page scrolls.
  */
-export default function SiteHeader() {
+export default function SiteHeader({ services }: { services?: ReactNode }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -44,12 +45,13 @@ export default function SiteHeader() {
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-6">
       <div
-        className={`relative mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-xl pl-2.5 pr-2 sm:pl-3 transition-[background-color,box-shadow] duration-300 ${
+        className={`relative mx-auto max-w-7xl rounded-xl transition-[background-color,box-shadow] duration-300 ${
           light
             ? 'bg-ivory/90 shadow-[0_10px_30px_-12px_rgba(6,34,20,0.35)] ring-1 ring-brand-950/10 backdrop-blur-md'
             : 'bg-brand-950/45 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.5)] ring-1 ring-white/10 backdrop-blur-md'
         }`}
       >
+      <div className="flex h-16 items-center justify-between gap-4 pl-2.5 pr-2 sm:pl-3">
         <Logo light={!light} compact />
 
         <nav aria-label="Main" className="hidden lg:flex items-center">
@@ -92,6 +94,18 @@ export default function SiteHeader() {
             </svg>
           </button>
         </div>
+
+      </div>
+
+        {services && (
+          <div
+            className={`grid transition-[grid-template-rows,opacity] duration-300 ${scrolled || open ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] border-t border-white/10 opacity-100'}`}
+            aria-hidden={scrolled || open}
+            inert={scrolled || open}
+          >
+            <div className="min-h-0 overflow-hidden">{services}</div>
+          </div>
+        )}
 
         {/* Phone menu: a floating panel under the bar */}
         <div

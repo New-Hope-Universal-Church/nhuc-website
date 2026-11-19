@@ -18,7 +18,7 @@ export interface DayOption {
 }
 
 /**
- * Put your name down for one of the next counselling days. Sends through a
+ * Book a session on one of the next counselling days. Sends through a
  * server action. `?day=<id>` (from an event's page) picks that day.
  */
 export default function BookingForm({ days }: { days: DayOption[] }) {
@@ -30,7 +30,7 @@ export default function BookingForm({ days }: { days: DayOption[] }) {
     return (
       <div role="status" className="rounded-md bg-white p-8 text-center ring-1 ring-brand-950/10 sm:p-12">
         <p className="font-display text-[12px] font-bold uppercase tracking-[0.2em] text-crimson-700">
-          {state.already ? 'Already on the list' : 'You are on the list'}
+          {state.already ? 'Already booked' : 'Session booked'}
         </p>
         <h2 className="mt-3 font-heading text-3xl font-semibold text-brand-950">Thank you, {state.name}.</h2>
         {d ? (
@@ -109,7 +109,7 @@ export default function BookingForm({ days }: { days: DayOption[] }) {
           disabled={pending}
           className="inline-flex h-12 items-center justify-center rounded-md bg-gold-400 px-7 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-brand-950 transition-colors hover:bg-gold-300 disabled:opacity-60"
         >
-          {pending ? 'Sending…' : 'Book'}
+          {pending ? 'Booking…' : 'Book a session'}
         </button>
         <p className="text-sm text-ink/55">Then come on the day. You will be seen in the order you arrive.</p>
       </div>

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 const POINTS = [
-  { title: 'Book a session', text: 'Choose one of the coming counselling days and add your name to the list.' },
+  { title: 'Book a session', text: 'Choose one of the coming counselling days and book it.' },
   { title: 'Come on the day', text: `Come to the church in ${site.address.line1} during the hours shown. You will be seen in the order you arrive.` },
   { title: 'Confidential', text: 'What you share stays between you and the person who counsels you.' },
 ];
