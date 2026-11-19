@@ -12,6 +12,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      force:
+        description: Overwrite the copy even if its history differs (after main's history was rewritten)
+        type: boolean
+        default: false
 
 concurrency:
   group: sync-vercel-copy
@@ -35,11 +40,12 @@ jobs:
       - name: Push main to the copy
         env:
           TOKEN: ${{ secrets.VERCEL_COPY_TOKEN }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
         run: |
           if [ -z "$TOKEN" ]; then
             echo "::error::The VERCEL_COPY_TOKEN secret is missing."
             exit 1
           fi
-          # No --force: if the copy has commits of its own, this fails instead
-          # of throwing them away.
-          git push "https://nhucdev:${TOKEN}@github.com/nhucdev/nhuc-website-forked.git" HEAD:main
+          # Not forced unless asked for by hand: if the copy has commits of its
+          # own, this fails instead of throwing them away.
+          git push $FORCE "https://nhucdev:${TOKEN}@github.com/nhucdev/nhuc-website-forked.git" HEAD:main
