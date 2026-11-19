@@ -153,9 +153,9 @@ export default async function HomePage() {
               <div className="max-w-xl">
                 <Kicker>Counselling</Kicker>
                 <h2 className="mt-5 font-heading text-3xl font-semibold leading-tight tracking-tight text-ivory sm:text-4xl">Need someone to talk to and pray with?</h2>
-                <p className="mt-4 text-lg text-white/75">Book a counselling session on one of the next counselling days, then come and see the Leader. Confidential.</p>
+                <p className="mt-4 text-lg text-white/75">Book a slot for counselling, then come and see the Leader. Confidential.</p>
               </div>
-              <ButtonLink href="/counselling" variant="gold" className="shrink-0">Book a session <ArrowRight /></ButtonLink>
+              <ButtonLink href="/counselling" variant="gold" className="shrink-0">Book <ArrowRight /></ButtonLink>
             </div>
           </Reveal>
         </Container>
