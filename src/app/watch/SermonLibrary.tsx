@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import type { Sermon } from '@/lib/hopeserve';
 import { SermonThumb } from '@/components/sermons';
@@ -68,9 +69,21 @@ export default function SermonLibrary({ sermons }: { sermons: LibrarySermon[] })
       {found.length === 0 ? (
         <p className="mt-12 text-center text-ink/60">No sermons match that. Try another word.</p>
       ) : (
-        <div className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {found.slice(0, shown).map((s) => (
-            <article key={s.id}>
+        <MotionConfig reducedMotion="user">
+        <motion.div layout className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Cards rise in as they scroll into view; when searching or
+              filtering, the ones that go fade away and the rest glide into place. */}
+          <AnimatePresence mode="popLayout">
+          {found.slice(0, shown).map((s, n) => (
+            <motion.article
+              key={s.id}
+              layout
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.6, delay: (n % 4) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            >
               <Link href={`/watch/${s.id}`} className="group block rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400">
                 <SermonThumb sermon={s} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
                 <h3 className="mt-4 font-heading text-lg font-semibold leading-snug tracking-tight text-brand-950 group-hover:text-brand-700">{s.title}</h3>
@@ -81,9 +94,11 @@ export default function SermonLibrary({ sermons }: { sermons: LibrarySermon[] })
                   {s.series}
                 </button>
               )}
-            </article>
+            </motion.article>
           ))}
-        </div>
+          </AnimatePresence>
+        </motion.div>
+        </MotionConfig>
       )}
 
       {found.length > shown && (

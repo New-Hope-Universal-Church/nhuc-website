@@ -7,6 +7,7 @@ import { site } from '@/lib/site';
 import Markdown from '@/components/Markdown';
 import { ArrowLeft, ArrowRight, Container, Kente, Kicker, Scripture } from '@/components/ui';
 import DevotionalList, { type ListItem } from './DevotionalList';
+import { Reveal } from '@/components/motion';
 
 const noon = (date: string) => `${date}T12:00:00Z`;
 
@@ -36,6 +37,7 @@ export default function HopeReader({ d, all, today, isIndex }: { d: Devotional; 
   };
   const monthLabel = (date: string) => new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(noon(date)));
   const items: ListItem[] = all.map((x) => ({
+    id: x.id,
     date: x.date,
     title: x.title,
     scripture: x.scripture,
@@ -72,7 +74,7 @@ export default function HopeReader({ d, all, today, isIndex }: { d: Devotional; 
 
       <section className="py-12 sm:py-16">
         <Container className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-14">
-          <article className="min-w-0 max-w-3xl">
+          <article className="min-w-0 max-w-3xl"><Reveal>
             <div className="flex items-baseline justify-between gap-4">
               <p className="text-sm font-medium text-ink/55">{label(d.date)}</p>
               <a href="#all-devotionals" className="shrink-0 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800 lg:hidden">All devotionals</a>
@@ -123,12 +125,12 @@ export default function HopeReader({ d, all, today, isIndex }: { d: Devotional; 
                 )}
               </nav>
             )}
-          </article>
+          </Reveal></article>
 
-          <aside id="all-devotionals" aria-label="All devotionals" className="scroll-mt-28 lg:sticky lg:top-28 lg:self-start">
+          <aside id="all-devotionals" aria-label="All devotionals" className="scroll-mt-28 lg:sticky lg:top-28 lg:self-start"><Reveal from="right" delay={0.2}>
             <h2 className="mb-4 font-heading text-2xl font-semibold text-brand-950">All devotionals</h2>
             <DevotionalList items={items} current={d.date} />
-          </aside>
+          </Reveal></aside>
         </Container>
       </section>
     </>

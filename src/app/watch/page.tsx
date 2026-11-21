@@ -9,6 +9,7 @@ import { ArrowRight, ButtonLink, Container, Kicker } from '@/components/ui';
 import { LiveBadge, PhotoBanner, isLive } from '@/components/sections';
 import { SermonVideo, WatchLinks } from '@/components/sermons';
 import SermonLibrary from './SermonLibrary';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 
 export const metadata: Metadata = {
   title: 'Sermons',
@@ -72,11 +73,11 @@ export default async function WatchPage() {
       {latest && (
         <section className="py-16 sm:py-24">
           <Container className="grid items-center gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-14">
-            <div className="relative">
+            <Reveal from="zoom" className="relative">
               <span className="absolute -top-3 left-4 z-10 rounded-sm bg-crimson-600 px-3 py-1 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow">Latest</span>
               <SermonVideo sermon={latest} />
-            </div>
-            <div>
+            </Reveal>
+            <Reveal from="right" delay={0.15}>
               <Kicker>{latest.series ?? 'Latest message'}</Kicker>
               <h2 className="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight text-brand-950 sm:text-5xl">{latest.title}</h2>
               <p className="mt-4 text-ink/60">{latest.preacher} · {fmtShortDate(latest.date)}</p>
@@ -85,7 +86,7 @@ export default async function WatchPage() {
               <Link href={`/watch/${latest.id}`} className="group mt-6 inline-flex items-center gap-2 font-display text-[13px] font-bold uppercase tracking-[0.14em] text-crimson-700 hover:text-crimson-800">
                 {latest.notes ? 'Read the notes' : 'Open the sermon'} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-            </div>
+            </Reveal>
           </Container>
         </section>
       )}
@@ -109,9 +110,9 @@ export default async function WatchPage() {
             <Link href="/hope" className="text-gold-300 underline-offset-4 hover:underline">Hope for Today</Link>, and stay close.
           </p>
           {channels.length > 0 && (
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Stagger as="ul" className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" gap={0.1}>
               {channels.map((n) => (
-                <li key={n.key}>
+                <StaggerItem as="li" key={n.key} from="zoom">
                   <a href={site.social[n.key]} target="_blank" rel="noreferrer" className="group flex items-center gap-4 rounded-md bg-white/5 p-5 ring-1 ring-white/10 transition-colors hover:bg-white/10">
                     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-gold-400 text-brand-950">
                       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={n.path} /></svg>
@@ -121,9 +122,9 @@ export default async function WatchPage() {
                       <span className="block text-sm text-white/60">{ACTION[n.key]}</span>
                     </span>
                   </a>
-                </li>
+                </StaggerItem>
               ))}
-            </ul>
+            </Stagger>
           )}
           <div className="mt-10 flex flex-col items-start gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-lg text-white/80">Part of our online family? Tell us who you are, so we can pray for you and keep in touch.</p>

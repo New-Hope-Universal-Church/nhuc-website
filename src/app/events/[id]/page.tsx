@@ -7,6 +7,7 @@ import { daysUntil, fmtDay, fmtDays, fmtTime, isMultiDay, nowInGhana } from '@/l
 import { site } from '@/lib/site';
 import { ArrowLeft, ArrowRight, ButtonLink, CalendarIcon, CalendarPlus, Clock, Container, Kente, Kicker, MapPin, Person, SectionHeading } from '@/components/ui';
 import { EventCard, EventPoster, StatusTag, eventStatus } from '@/components/sections';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 
 /** Upcoming events are built ahead; any other is built on first visit. */
 export async function generateStaticParams() {
@@ -121,7 +122,7 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
 
       <section className="py-14 sm:py-20">
         <Container className="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
-          <div className="min-w-0">
+          <Reveal className="min-w-0">
             {e.flyerUrl ? (
               <a href={e.flyerUrl} target="_blank" rel="noreferrer" className="block">
                 <Image src={e.flyerUrl} alt={`${e.title} flyer`} width={1200} height={1500} sizes="(min-width: 1024px) 55vw, 100vw" priority className="h-auto w-full rounded-md ring-1 ring-brand-950/10" />
@@ -160,9 +161,9 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
                 <div className="mt-6"><ButtonLink href={`/counselling?day=${e.id}`}>Book a session</ButtonLink></div>
               </div>
             )}
-          </div>
+          </Reveal>
 
-          <aside className="self-start lg:sticky lg:top-28">
+          <aside className="self-start lg:sticky lg:top-28"><Reveal from="right" delay={0.15}>
             <div className="overflow-hidden rounded-md bg-white ring-1 ring-brand-950/10">
               <Kente className="!h-1.5" />
               <div className="p-7">
@@ -197,7 +198,7 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
                 </div>
               </div>
             </div>
-          </aside>
+          </Reveal></aside>
         </Container>
       </section>
 
@@ -205,9 +206,9 @@ async function EventDetail({ params }: Pick<PageProps<'/events/[id]'>, 'params'>
         <section className="border-t border-brand-950/10 bg-white py-20 sm:py-24">
           <Container>
             <SectionHeading kicker="What's on" title="More events" />
-            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {others.map((o) => <EventCard key={o.id} event={o} now={now} />)}
-            </div>
+            <Stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3" gap={0.12}>
+              {others.map((o) => <StaggerItem key={o.id} className="flex *:w-full"><EventCard event={o} now={now} /></StaggerItem>)}
+            </Stagger>
           </Container>
         </section>
       )}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { site } from '@/lib/site';
 import { ButtonLink, Container, Kicker, Photo, SectionHeading } from '@/components/ui';
 import { AnchorVerse, PageHero } from '@/components/sections';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 
 export const metadata: Metadata = {
   title: 'About us',
@@ -32,20 +33,20 @@ export default function AboutPage() {
 
       <section className="py-24 sm:py-32">
         <Container className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <div>
+          <Reveal from="left">
             <Kicker>Our mission</Kicker>
             <p className="mt-6 font-serif text-2xl italic leading-snug text-brand-950 sm:text-3xl">To make disciples who carry the hope of Christ into every home and community.</p>
-          </div>
-          <div>
+          </Reveal>
+          <Reveal from="right" delay={0.12}>
             <Kicker>Our vision</Kicker>
             <p className="mt-6 font-serif text-2xl italic leading-snug text-brand-950 sm:text-3xl">A church where every person finds hope, healing and purpose in Jesus.</p>
-          </div>
+          </Reveal>
         </Container>
       </section>
 
       <section className="bg-white py-24 sm:py-32">
         <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <Photo alt="" shot="Portrait of the Leader" className="aspect-[4/5] rounded-md" />
+          <Reveal from="zoom"><Photo alt="" shot="Portrait of the Leader" className="aspect-[4/5] rounded-md" /></Reveal>
           <div>
             <SectionHeading kicker="Our Leader" title="Meet our Leader" intro="A short introduction to our Leader: their calling, their family, and their heart for the church. (To be written with the church office.)" />
           </div>
@@ -55,30 +56,30 @@ export default function AboutPage() {
       <section className="py-24 sm:py-32">
         <Container>
           <SectionHeading kicker="Our journey" title="How we got here" />
-          <ol className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <Stagger as="ol" className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4" gap={0.14}>
             {STORY.map((s, i) => (
-              <li key={s.label} className="border-t-4 border-crimson-600 pt-6">
+              <StaggerItem as="li" key={s.label} className="border-t-4 border-crimson-600 pt-6">
                 <span className="font-display text-5xl font-extrabold text-gold-500/40">{String(i + 1).padStart(2, '0')}</span>
                 <h3 className="mt-3 font-heading font-semibold tracking-tight text-2xl text-brand-950">{s.label}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink/65">{s.text}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ol>
+          </Stagger>
         </Container>
       </section>
 
       <section className="bg-church py-24 sm:py-32">
         <Container>
           <SectionHeading light kicker="What we believe" title="Our foundations" />
-          <div className="mt-14 grid gap-px overflow-hidden rounded-md bg-white/10 sm:grid-cols-2">
+          <Stagger className="mt-14 grid gap-px overflow-hidden rounded-md bg-white/10 sm:grid-cols-2" gap={0.1}>
             {BELIEFS.map((b) => (
-              <div key={b.title} className="bg-brand-950/80 p-8">
+              <StaggerItem key={b.title} from="zoom" className="bg-brand-950/80 p-8">
                 <h3 className="font-heading font-semibold tracking-tight text-2xl text-white">{b.title}</h3>
                 <p className="mt-2 text-white/65">{b.text}</p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
-          <div className="mt-12"><ButtonLink href="/visit" variant="gold">Visit us this Sunday</ButtonLink></div>
+          </Stagger>
+          <Reveal className="mt-12" delay={0.2}><ButtonLink href="/visit" variant="gold">Visit us this Sunday</ButtonLink></Reveal>
         </Container>
       </section>
     </>

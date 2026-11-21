@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -8,6 +9,7 @@ const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', '
 /** One devotional in the list, with its labels written out on the server
  *  (in Ghana time). */
 export interface ListItem {
+  id: string;
   date: string;
   title: string;
   scripture: string | null;
@@ -63,12 +65,22 @@ export default function DevotionalList({ items, current }: { items: ListItem[]; 
 
       <p className="text-xs text-ink/50" aria-live="polite">{shown.length} {shown.length === 1 ? 'devotional' : 'devotionals'}</p>
 
+      <MotionConfig reducedMotion="user">
       <ul className="-mr-2 space-y-1 overflow-y-auto pr-2 [scrollbar-width:thin] max-lg:max-h-[28rem]">
-        {shown.map((i) => {
+        {/* The list cascades in; searching or filtering slides rows out and the rest close up. */}
+        <AnimatePresence initial={false} mode="popLayout">
+        {shown.map((i, n) => {
           const on = i.date === current;
           const [, m, day] = i.date.split('-');
           return (
-            <li key={i.date}>
+            <motion.li
+              key={i.id}
+              layout
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.45, delay: Math.min(n, 10) * 0.035, ease: [0.22, 1, 0.36, 1] }}
+            >
               <Link
                 href={`/hope/${i.date}`}
                 aria-current={on ? 'page' : undefined}
@@ -83,11 +95,13 @@ export default function DevotionalList({ items, current }: { items: ListItem[]; 
                   <span className="block truncate text-xs text-ink/50">{[i.relative ?? i.weekday, i.scripture].filter(Boolean).join(' · ')}</span>
                 </span>
               </Link>
-            </li>
+            </motion.li>
           );
         })}
+        </AnimatePresence>
         {shown.length === 0 && <li className="rounded-md bg-white p-4 text-sm text-ink/60 ring-1 ring-brand-950/10">Nothing matches that. Try another word or month.</li>}
       </ul>
+      </MotionConfig>
     </div>
   );
 }

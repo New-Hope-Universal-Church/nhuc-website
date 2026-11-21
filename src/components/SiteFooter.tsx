@@ -4,6 +4,7 @@ import { navLinks, site } from '@/lib/site';
 import { getSchedule } from '@/lib/hopeserve';
 import { Container, Kente, Logo } from './ui';
 import SocialLinks from './SocialLinks';
+import { Stagger, StaggerItem } from './motion';
 
 export default async function SiteFooter() {
   'use cache';
@@ -14,8 +15,8 @@ export default async function SiteFooter() {
     <footer className="bg-church text-white">
       <Kente />
       <Container className="py-16 sm:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
+        <Stagger className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]" gap={0.1}>
+          <StaggerItem>
             <Logo light />
             <p className="mt-6 max-w-xs font-serif text-xl italic leading-snug text-white/90">
               &ldquo;{site.motto}&rdquo;
@@ -23,9 +24,9 @@ export default async function SiteFooter() {
             <p className="mt-2 text-sm text-white/50">{site.mottoReference}</p>
             <p lang="tw" className="mt-5 font-display text-sm font-extrabold uppercase tracking-[0.12em] text-gold-300">New Hope, {site.responses[0].twi}!</p>
             <SocialLinks light className="mt-6" />
-          </div>
+          </StaggerItem>
 
-          <div>
+          <StaggerItem>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Explore</h2>
             <ul className="mt-5 space-y-3 text-sm">
               {navLinks.map((item) => (
@@ -33,9 +34,9 @@ export default async function SiteFooter() {
               ))}
               <li><Link href="/give" className="text-white/70 hover:text-white">Give</Link></li>
             </ul>
-          </div>
+          </StaggerItem>
 
-          <div className={schedule.length ? '' : 'hidden'}>
+          <StaggerItem className={schedule.length ? '' : 'hidden'}>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Gather with us</h2>
             <ul className="mt-5 space-y-4 text-sm">
               {schedule.map((s) => (
@@ -45,9 +46,9 @@ export default async function SiteFooter() {
                 </li>
               ))}
             </ul>
-          </div>
+          </StaggerItem>
 
-          <div>
+          <StaggerItem>
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Find us</h2>
             <address className="mt-5 not-italic text-sm leading-relaxed text-white/70">
               {site.address.line1}<br />{site.address.city}, {site.address.country}
@@ -61,8 +62,8 @@ export default async function SiteFooter() {
                 {site.email && <li><a href={`mailto:${site.email}`} className="hover:text-white">{site.email}</a></li>}
               </ul>
             )}
-          </div>
-        </div>
+          </StaggerItem>
+        </Stagger>
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>

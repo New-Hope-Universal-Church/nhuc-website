@@ -67,16 +67,18 @@ export default async function HomePage() {
 
       {/* ─── Service times ────────────────────────────────────────────────── */}
       <section className="py-24 sm:py-28">
-        <Container className="grid gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
-          <Reveal>
-            <SectionHeading kicker="Gather with us" title="Service times" intro="Come as you are. Our ushers will help you find a seat." />
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+        <Container className="grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:grid-rows-[auto_1fr] lg:gap-x-20">
+          <div className="lg:col-start-1 lg:row-start-1">
+            <SectionHeading kicker="Gather with us" title="Times of service" intro="Come as you are. Our ushers will help you find a seat." />
+          </div>
+          <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+            {schedule.length ? <ServiceTimes items={schedule} /> : <p className="text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
+          </div>
+          <Reveal delay={0.3} className="lg:col-start-1 lg:row-start-2">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <ButtonLink href="/visit" variant="dark">Plan your visit</ButtonLink>
               <ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="outline-dark">Get directions</ButtonLink>
             </div>
-          </Reveal>
-          <Reveal delay={0.15} className="self-center">
-            {schedule.length ? <ServiceTimes items={schedule} /> : <p className="text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
           </Reveal>
         </Container>
       </section>
@@ -84,37 +86,39 @@ export default async function HomePage() {
       {/* ─── Today's word and the latest sermon ───────────────────────────── */}
       {(devotional || sermon) && (
         <section className="bg-white py-24 sm:py-28">
-          <Container className="grid gap-6 lg:grid-cols-2">
+          <Container>
+          <SectionHeading kicker="The Word" title="Sermons and Devotionals" intro="Feed on the Word of God, and apply it in your life" />
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
             {devotional && (
-              <Reveal className="flex">
+              <Reveal from="left" className="flex">
               <article className="flex w-full flex-col overflow-hidden rounded-md bg-cream ring-1 ring-brand-950/10">
                 <Kente />
                 <div className="flex flex-1 flex-col p-8 sm:p-10">
                   <Kicker>Hope for Today</Kicker>
                   <p className="mt-4 text-sm text-ink/50">{fmtDay(`${devotional.date}T12:00:00Z`)}</p>
-                  <h2 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-brand-950">{devotional.title}</h2>
+                  <h3 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-brand-950">{devotional.title}</h3>
                   {devotional.scripture && <Scripture className="mt-2 text-crimson-700!">{devotional.scripture}</Scripture>}
                   <p className="mt-5 flex-1 leading-relaxed text-ink/75">{excerpt(devotional, 180)}</p>
                   <div className="mt-7">
-                    <ButtonLink href={`/hope/${devotional.date}`} variant="dark">{devotional.date === today ? 'Read today’s devotional' : 'Read the latest devotional'}</ButtonLink>
+                    <ButtonLink href={`/hope/${devotional.date}`} variant="gold">{devotional.date === today ? 'Read more' : 'Read latest'}</ButtonLink>
                   </div>
                 </div>
               </article>
               </Reveal>
             )}
             {sermon && (
-              <Reveal delay={0.12} className="flex">
+              <Reveal from="right" delay={0.12} className="flex">
               <article className="flex w-full flex-col overflow-hidden rounded-md bg-church text-white">
                 <Kente />
                 <div className="flex flex-1 flex-col p-8 sm:p-10">
                   <Kicker>Latest sermon</Kicker>
                   <p className="mt-4 text-sm text-white/55">{sermon.preacher} · {fmtShortDate(sermon.date)}</p>
-                  <h2 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-ivory">{sermon.title}</h2>
+                  <h3 className="mt-2 font-heading text-3xl font-semibold leading-tight tracking-tight text-ivory">{sermon.title}</h3>
                   {sermon.scriptures.length > 0 && <Scripture light className="mt-2">{scriptureLine(sermon)}</Scripture>}
                   <div className="flex-1" />
                   <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
                     {(sermon.youtubeUrl || sermon.facebookUrl) && (
-                      <ButtonLink href={(sermon.youtubeUrl ?? sermon.facebookUrl)!} target="_blank" rel="noreferrer" variant="gold">Watch the sermon</ButtonLink>
+                      <ButtonLink href={(sermon.youtubeUrl ?? sermon.facebookUrl)!} target="_blank" rel="noreferrer" variant="gold">Watch sermon</ButtonLink>
                     )}
                     <MoreLink href="/watch" light>All sermons</MoreLink>
                   </div>
@@ -122,6 +126,7 @@ export default async function HomePage() {
               </article>
               </Reveal>
             )}
+          </div>
           </Container>
         </section>
       )}
@@ -147,7 +152,7 @@ export default async function HomePage() {
       {/* ─── Counselling ──────────────────────────────────────────────────── */}
       <section className="pb-24 sm:pb-28">
         <Container>
-          <Reveal className="overflow-hidden rounded-md bg-church">
+          <Reveal from="zoom" className="overflow-hidden rounded-md bg-church">
             <Kente />
             <div className="flex flex-col items-start gap-8 p-8 sm:p-14 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-xl">

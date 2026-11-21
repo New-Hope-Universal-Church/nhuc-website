@@ -3,6 +3,7 @@ import { getSchedule } from '@/lib/hopeserve';
 import { site } from '@/lib/site';
 import { ButtonLink, Container, Kicker, Photo, SectionHeading } from '@/components/ui';
 import { PageHero, ServiceTimes } from '@/components/sections';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 import SocialLinks, { hasSocials } from '@/components/SocialLinks';
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default async function VisitPage() {
   ].filter(Boolean) as { label: string; value: string; href: string }[];
   return (
     <>
-      <PageHero kicker="Plan your visit" title="We saved you a seat" intro="Whether it is your first time in church or your first time with us, we would love to meet you." shot="Ushers welcoming people at the entrance" />
+      <PageHero kicker="Plan your visit" title="We saved you a seat" intro="Whether it is your first time in church or your first time with us, we would love to meet you." />
 
       <section className="py-24 sm:py-32">
         <Container className="grid gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
@@ -38,12 +39,12 @@ export default async function VisitPage() {
         <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
             <SectionHeading kicker="Where" title="Find us" />
-            <address className="mt-8 not-italic font-heading text-2xl font-semibold leading-snug tracking-tight text-brand-950">
+            <Reveal from="left"><address className="mt-8 not-italic font-heading text-2xl font-semibold leading-snug tracking-tight text-brand-950">
               {site.address.line1}<br />{site.address.city}, {site.address.country}
-            </address>
-            <div className="mt-8"><ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="gold">Get directions</ButtonLink></div>
+            </address></Reveal>
+            <Reveal className="mt-8" delay={0.1}><ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="gold">Get directions</ButtonLink></Reveal>
 
-            <div className="mt-12 border-t border-brand-950/10 pt-8">
+            <Reveal className="mt-12 border-t border-brand-950/10 pt-8" delay={0.15}>
               <Kicker>Reach us</Kicker>
               <p className="mt-4 text-ink/65">Prayer requests, questions about the church, or help finding your way to us.</p>
               {channels.length ? (
@@ -59,23 +60,23 @@ export default async function VisitPage() {
                 <p className="mt-3 text-ink/65">Phone and email details are coming soon. Until then, please speak to an usher at any service.</p>
               )}
               {hasSocials() && <SocialLinks className="mt-6" />}
-            </div>
+            </Reveal>
           </div>
-          <Photo alt="" shot="The church entrance and signboard" className="aspect-[4/3] rounded-md" />
+          <Reveal from="zoom" delay={0.1}><Photo alt="" shot="The church entrance and signboard" className="aspect-[4/3] rounded-md" /></Reveal>
         </Container>
       </section>
 
       <section className="py-24 sm:py-32">
         <Container>
           <SectionHeading kicker="Your first Sunday" title="What to expect" />
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Stagger className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" gap={0.12}>
             {EXPECT.map((e) => (
-              <div key={e.title} className="rounded-md bg-white p-7 ring-1 ring-brand-950/5">
+              <StaggerItem key={e.title} className="rounded-md bg-white p-7 ring-1 ring-brand-950/5">
                 <Kicker>{e.title}</Kicker>
                 <p className="mt-4 text-ink/70 leading-relaxed">{e.text}</p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </Container>
       </section>
     </>

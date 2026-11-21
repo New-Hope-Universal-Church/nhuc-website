@@ -3,6 +3,7 @@ import { site } from '@/lib/site';
 import { todayInGhana } from '@/lib/format';
 import { Container, Kicker } from '@/components/ui';
 import { MoreLink, PageHero } from '@/components/sections';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 import JoinForm from './JoinForm';
 
 export const metadata: Metadata = {
@@ -28,19 +29,19 @@ export default async function JoinPage() {
       />
       <section className="py-20 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-[1.6fr_1fr] lg:gap-16">
-          <JoinForm minDate={today} />
-          <aside className="space-y-8">
+          <Reveal className="min-w-0"><JoinForm minDate={today} /></Reveal>
+          <Stagger as="aside" className="space-y-8" gap={0.12} delay={0.2}>
             {POINTS.map((p) => (
-              <div key={p.title}>
+              <StaggerItem key={p.title} from="right">
                 <Kicker>{p.title}</Kicker>
                 <p className="mt-3 text-lg leading-relaxed text-ink/70">{p.text}</p>
-              </div>
+              </StaggerItem>
             ))}
-            <div className="border-t border-brand-950/10 pt-6">
+            <StaggerItem from="right" className="border-t border-brand-950/10 pt-6">
               <p className="text-ink/65">Far away, or can&apos;t make it in person?</p>
               <div className="mt-3"><MoreLink href="/watch#online">Join our online family</MoreLink></div>
-            </div>
-          </aside>
+            </StaggerItem>
+          </Stagger>
         </Container>
       </section>
     </>
