@@ -31,7 +31,7 @@ export default function AboutPage() {
 
       <AnchorVerse />
 
-      <section className="py-24 sm:py-32">
+      <section className="bg-white py-24 sm:py-32">
         <Container className="grid gap-12 lg:grid-cols-2 lg:gap-20">
           <Reveal from="left">
             <Kicker>Our mission</Kicker>
@@ -46,14 +46,14 @@ export default function AboutPage() {
 
       <section className="bg-white py-24 sm:py-32">
         <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <Reveal from="zoom"><Photo alt="" shot="Portrait of the Leader" className="aspect-[4/5] rounded-md" /></Reveal>
+          <Reveal from="zoom"><Photo alt="" shot="Portrait of the Leader" className="aspect-4/5 rounded-md" /></Reveal>
           <div>
             <SectionHeading kicker="Our Leader" title="Meet our Leader" intro="A short introduction to our Leader: their calling, their family, and their heart for the church. (To be written with the church office.)" />
           </div>
         </Container>
       </section>
 
-      <section className="py-24 sm:py-32">
+      <section className="bg-white py-24 sm:py-32">
         <Container>
           <SectionHeading kicker="Our journey" title="How we got here" />
           <Stagger as="ol" className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4" gap={0.14}>
@@ -68,9 +68,9 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="bg-church py-24 sm:py-32">
+      <section className="py-24 sm:py-32">
         <Container>
-          <SectionHeading light kicker="What we believe" title="Our foundations" />
+          <SectionHeading kicker="What we believe" title="Our foundations" />
           <Stagger className="mt-14 grid gap-px overflow-hidden rounded-md bg-white/10 sm:grid-cols-2" gap={0.1}>
             {BELIEFS.map((b) => (
               <StaggerItem key={b.title} from="zoom" className="bg-brand-950/80 p-8">
