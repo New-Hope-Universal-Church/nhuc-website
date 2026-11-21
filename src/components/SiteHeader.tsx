@@ -49,7 +49,7 @@ export default function SiteHeader({ services }: { services?: ReactNode }) {
           showing round the floating bar. Only once the page has scrolled. */}
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-x-0 -top-3 -bottom-6 -z-10 bg-cream/70 backdrop-blur-md transition-opacity duration-300 [mask-image:linear-gradient(to_bottom,black_65%,transparent)] sm:-top-4 ${
+        className={`pointer-events-none absolute inset-x-0 -top-3 -bottom-6 -z-10 bg-transparent/70 backdrop-blur-md transition-opacity duration-300 mask-[linear-gradient(to_bottom,black_65%,transparent)] sm:-top-4 ${
           scrolled ? 'opacity-100' : 'opacity-0'
         }`}
       />

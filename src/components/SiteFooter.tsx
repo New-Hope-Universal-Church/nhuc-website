@@ -67,7 +67,7 @@ export default async function SiteFooter() {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <a href="https://hopeserve.newhopeuniversalchurch.org" className="hover:text-white/80">Staff sign in</a>
+          {/* <a href="https://hopeserve.newhopeuniversalchurch.org" className="hover:text-white/80">Staff sign in</a> */}
         </div>
       </Container>
     </footer>
