@@ -23,7 +23,6 @@ export default async function SiteFooter() {
             </p>
             <p className="mt-2 text-sm text-white/50">{site.mottoReference}</p>
             <p lang="tw" className="mt-5 font-display text-sm font-extrabold uppercase tracking-[0.12em] text-gold-300">New Hope, {site.responses[0].twi}!</p>
-            <SocialLinks light className="mt-6" />
           </StaggerItem>
 
           <StaggerItem>
@@ -67,6 +66,7 @@ export default async function SiteFooter() {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/10 pt-8 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+          <SocialLinks light />
           {/* <a href="https://hopeserve.newhopeuniversalchurch.org" className="hover:text-white/80">Staff sign in</a> */}
         </div>
       </Container>
