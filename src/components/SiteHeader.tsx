@@ -44,6 +44,15 @@ export default function SiteHeader({ services }: { services?: ReactNode }) {
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3 sm:top-4 sm:px-6">
+      {/* Frosted band from the top of the screen to just below the bar, fading
+          out at its foot, so what has scrolled past blurs away instead of
+          showing round the floating bar. Only once the page has scrolled. */}
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-x-0 -top-3 -bottom-6 -z-10 bg-cream/70 backdrop-blur-md transition-opacity duration-300 [mask-image:linear-gradient(to_bottom,black_65%,transparent)] sm:-top-4 ${
+          scrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
       <div
         className={`relative mx-auto max-w-7xl rounded-xl transition-[background-color,box-shadow] duration-300 ${
           light

@@ -127,19 +127,71 @@ function Greeting() {
 
 // ─── Reveal on scroll ─────────────────────────────────────────────────────────
 
-/** Fades and lifts its children into place the first time they scroll into view. */
-export function Reveal({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
+/** Where something comes from as it appears. */
+export type From = 'up' | 'left' | 'right' | 'zoom' | 'blur' | 'fade';
+
+const HIDDEN: Record<From, Record<string, number | string>> = {
+  up: { opacity: 0, y: 32 },
+  left: { opacity: 0, x: -40 },
+  right: { opacity: 0, x: 40 },
+  zoom: { opacity: 0, scale: 0.94 },
+  blur: { opacity: 0, y: 14, filter: 'blur(10px)' },
+  fade: { opacity: 0 },
+};
+const SHOWN: Record<From, Record<string, number | string>> = {
+  up: { opacity: 1, y: 0 },
+  left: { opacity: 1, x: 0 },
+  right: { opacity: 1, x: 0 },
+  zoom: { opacity: 1, scale: 1 },
+  blur: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  fade: { opacity: 1 },
+};
+
+/** Fades its children into place (lifting, sliding or zooming, see `from`)
+ *  the first time they scroll into view. */
+export function Reveal({ children, delay = 0, className = '', from = 'up' }: { children: ReactNode; delay?: number; className?: string; from?: From }) {
   return (
     <MotionConfig reducedMotion="user">
       <motion.div
         className={className}
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={HIDDEN[from]}
+        whileInView={SHOWN[from]}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.8, delay, ease: EASE }}
       >
         {children}
       </motion.div>
     </MotionConfig>
+  );
+}
+
+type Tag = 'div' | 'ul' | 'ol' | 'li' | 'section' | 'figure' | 'aside';
+
+/** A list or grid whose items (`StaggerItem`) arrive one after another as it
+ *  scrolls into view. */
+export function Stagger({ children, className = '', gap = 0.09, delay = 0, as = 'div' }: { children: ReactNode; className?: string; gap?: number; delay?: number; as?: Tag }) {
+  const M = motion[as];
+  return (
+    <MotionConfig reducedMotion="user">
+      <M
+        className={className}
+        initial="hidden"
+        whileInView="shown"
+        viewport={{ once: true, margin: '-60px' }}
+        variants={{ hidden: {}, shown: { transition: { staggerChildren: gap, delayChildren: delay } } }}
+      >
+        {children}
+      </M>
+    </MotionConfig>
+  );
+}
+
+/** One item of a `Stagger`. */
+export function StaggerItem({ children, className = '', from = 'up', as = 'div' }: { children: ReactNode; className?: string; from?: From; as?: Tag }) {
+  const M = motion[as];
+  return (
+    <M className={className} variants={{ hidden: HIDDEN[from], shown: { ...SHOWN[from], transition: { duration: 0.75, ease: EASE } } }}>
+      {children}
+    </M>
   );
 }

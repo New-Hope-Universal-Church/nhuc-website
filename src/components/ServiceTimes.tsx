@@ -14,7 +14,7 @@ export default async function ServiceTimes() {
   const schedule = await getSchedule();
   if (!schedule.length) return null;
   return (
-    <div className="flex items-center gap-4 overflow-x-auto px-4 py-2 text-[12px] [scrollbar-width:none] sm:px-5">
+    <div className="flex items-center gap-4 overflow-x-auto px-4 py-2 text-[12px] scrollbar-none sm:px-5">
       <ul className="flex shrink-0 items-center gap-x-5">
         {schedule.map((s) => (
           <li key={s.id} className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">

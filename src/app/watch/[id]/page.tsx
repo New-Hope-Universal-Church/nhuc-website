@@ -7,6 +7,7 @@ import { site } from '@/lib/site';
 import Markdown from '@/components/Markdown';
 import { ArrowLeft, ButtonLink, Container, Kente, Kicker } from '@/components/ui';
 import { SermonThumb, SermonVideo, WatchLinks } from '@/components/sermons';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 
 /** Recent sermons are built ahead; any other is built on first visit. */
 export async function generateStaticParams() {
@@ -56,7 +57,7 @@ async function SermonDetail({ params }: Pick<PageProps<'/watch/[id]'>, 'params'>
 
       <section className="py-14 sm:py-20">
         <Container className="max-w-4xl">
-          <SermonVideo sermon={s} />
+          <Reveal from="zoom"><SermonVideo sermon={s} /></Reveal>
           <WatchLinks sermon={s} className="mt-6" />
           {s.scriptures.length > 0 && (
             <p className="mt-10 font-serif text-xl italic text-crimson-700">{scriptureLine(s)}</p>
@@ -74,15 +75,15 @@ async function SermonDetail({ params }: Pick<PageProps<'/watch/[id]'>, 'params'>
         <section className="border-t border-brand-950/10 bg-white py-16 sm:py-20">
           <Container>
             <h2 className="font-heading text-3xl font-semibold tracking-tight text-brand-950">{s.series && others.some((o) => o.series === s.series) ? `More from ${s.series}` : 'More sermons'}</h2>
-            <div className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            <Stagger className="mt-8 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4" gap={0.1}>
               {more.map((o) => (
-                <Link key={o.id} href={`/watch/${o.id}`} className="group block">
+                <StaggerItem key={o.id}><Link href={`/watch/${o.id}`} className="group block">
                   <SermonThumb sermon={o} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
                   <h3 className="mt-4 font-heading text-lg font-semibold leading-snug text-brand-950 group-hover:text-brand-700">{o.title}</h3>
                   <p className="mt-1 truncate text-sm text-ink/55">{fmtShortDate(o.date)} · {o.preacher}</p>
-                </Link>
+                </Link></StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </Container>
         </section>
       )}

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Fraunces, Inter, Merriweather, Montserrat } from 'next/font/google';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
-import ServiceTimes from '@/components/ServiceTimes';
+// import ServiceTimes from '@/components/ServiceTimes';
 import { site } from '@/lib/site';
 import './globals.css';
 
@@ -38,8 +38,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-brand-950">
           Skip to content
         </a>
-        <SiteHeader services={<ServiceTimes />} />
-        <main id="main" className="flex-1">{children}</main>
+        {/* <SiteHeader services={<ServiceTimes />} /> */}
+        <SiteHeader/>
+        <main id="main" className="flex-1 overflow-x-clip">{children}</main>
         <SiteFooter />
       </body>
     </html>

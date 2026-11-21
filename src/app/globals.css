@@ -56,11 +56,17 @@
 
 html {
   scroll-behavior: smooth;
+  /* With body and <main> below: the page is never wider than the screen,
+     even in mobile browsers that ignore it on body alone. */
+  overflow-x: clip;
 }
 
 body {
   background: var(--color-cream);
   color: var(--color-ink);
+  /* Nothing may widen the page: things that slide in from the side start
+     past the edge. `clip`, not `hidden`, so sticky sidebars still stick. */
+  overflow-x: clip;
 }
 
 /* Keyboard focus is always visible; mouse clicks don't leave a ring. */
@@ -132,4 +138,22 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-line, .hero-rise, .hero-photo { animation: none; }
+}
+
+/* ─── Kente draws in ──────────────────────────────────────────────────────────
+   Each strip weaves across from the left as it scrolls into view, tied to the
+   scroll itself. Browsers without scroll-linked animation just show it. */
+@keyframes kente-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .kente {
+      transform-origin: left center;
+      animation: kente-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
 }

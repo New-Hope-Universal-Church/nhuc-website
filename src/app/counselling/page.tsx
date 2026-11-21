@@ -4,6 +4,7 @@ import { site } from '@/lib/site';
 import { getCounsellingDays, hours } from '@/lib/hopeserve';
 import { fmtDay, fmtTime } from '@/lib/format';
 import { Container, Kicker } from '@/components/ui';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 import { PageHero } from '@/components/sections';
 import BookingForm, { type DayOption } from './BookingForm';
 
@@ -31,20 +32,20 @@ export default async function CounsellingPage() {
       <section className="py-20 sm:py-24">
         <Container className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
           {/* The form reads ?day= from the address, so it renders in the browser. */}
-          <Suspense fallback={<div className="min-h-128 rounded-md bg-white ring-1 ring-brand-950/10" />}>
+          <Reveal className="min-w-0"><Suspense fallback={<div className="min-h-128 rounded-md bg-white ring-1 ring-brand-950/10" />}>
             <BookingForm days={days} />
-          </Suspense>
-          <aside className="space-y-8">
+          </Suspense></Reveal>
+          <Stagger as="aside" className="space-y-8" gap={0.12} delay={0.2}>
             {POINTS.map((p) => (
-              <div key={p.title}>
+              <StaggerItem key={p.title} from="right">
                 <Kicker>{p.title}</Kicker>
                 <p className="mt-3 text-lg leading-relaxed text-ink/70">{p.text}</p>
-              </div>
+              </StaggerItem>
             ))}
-            <p className="border-t border-brand-950/10 pt-6 text-sm text-ink/55">
+            <StaggerItem from="right"><p className="border-t border-brand-950/10 pt-6 text-sm text-ink/55">
               In an emergency or if you are in danger, please call <a href="tel:112" className="font-semibold text-crimson-700">112</a> straight away.
-            </p>
-          </aside>
+            </p></StaggerItem>
+          </Stagger>
         </Container>
       </section>
     </>

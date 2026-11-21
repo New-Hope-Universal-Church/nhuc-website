@@ -7,7 +7,7 @@ import Markdown from '@/components/Markdown';
 import { EVENTS_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
 import { Container, Kicker, SectionHeading } from '@/components/ui';
-import { Reveal } from '@/components/motion';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion';
 import { EventCard, PhotoBanner } from '@/components/sections';
 import type { UpcomingEvent } from '@/lib/hopeserve';
 
@@ -105,9 +105,9 @@ export default async function EventsPage() {
         <section id="news" className="scroll-mt-24 border-t border-brand-950/10 bg-white py-16 sm:py-20">
           <Container>
             <SectionHeading kicker="Church news" title="Announcements" />
-            <div className="mt-8 gap-6 md:columns-2">
-              {news.map((a) => <Notice key={a.id} a={a} />)}
-            </div>
+            <Stagger className="mt-8 gap-6 md:columns-2" gap={0.12}>
+              {news.map((a) => <StaggerItem key={a.id} className="break-inside-avoid"><Notice a={a} /></StaggerItem>)}
+            </Stagger>
           </Container>
         </section>
       )}
@@ -116,9 +116,9 @@ export default async function EventsPage() {
         <section className="border-t border-brand-950/10 bg-cream/60 py-16 sm:py-20">
           <Container>
             <SectionHeading kicker="Looking back" title="Past events" />
-            <div className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {past.map((e) => <PastEvent key={e.id} event={e} />)}
-            </div>
+            <Stagger className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3" gap={0.07}>
+              {past.map((e) => <StaggerItem key={e.id} from="left"><PastEvent event={e} /></StaggerItem>)}
+            </Stagger>
           </Container>
         </section>
       )}

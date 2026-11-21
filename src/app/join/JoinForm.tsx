@@ -49,7 +49,7 @@ export default function JoinForm({ minDate }: { minDate: string }) {
     <form action={action} className="rounded-md bg-white p-6 ring-1 ring-brand-950/10 sm:p-10">
       <fieldset>
         <legend className={label}>I would like to</legend>
-        <div className="flex space-x-3">
+        <div className="grid gap-3 sm:grid-cols-3">
           {CHOICES.map((c) => (
             <label key={c.value} className="flex cursor-pointer flex-col rounded-md px-4 py-2 ring-1 ring-inset ring-brand-950/15 has-checked:bg-gold-50 has-checked:ring-2 has-checked:ring-gold-400">
               <span className="flex items-center gap-2.5">

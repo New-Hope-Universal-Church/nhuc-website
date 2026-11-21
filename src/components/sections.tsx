@@ -5,6 +5,7 @@ import { streamLink, type ScheduleItem, type UpcomingEvent } from '@/lib/hopeser
 import { dateTile, daysUntil, fmtDay, fmtDays, fmtTime, fmtWeekday, isMultiDay, programDay } from '@/lib/format';
 import { HERO_IMAGE } from '@/lib/images';
 import { site } from '@/lib/site';
+import { Stagger, StaggerItem } from './motion';
 import { ArrowRight, Clock, Container, Kente, Kicker, MapPin, Photo } from './ui';
 
 /**
@@ -12,17 +13,19 @@ import { ArrowRight, Clock, Container, Kente, Kicker, MapPin, Photo } from './ui
  * graphics: deep green, a crimson label, the title in bold capitals, and a
  * gold-framed photo with kente beneath it.
  */
-export function PageHero({ kicker, title, intro, shot, src }: { kicker: string; title: ReactNode; intro?: ReactNode; shot: string; src?: string }) {
+export function PageHero({ kicker, title, intro, shot, src }: { kicker: string; title: ReactNode; intro?: ReactNode; shot?: string; src?: string }) {
   return (
     <section className="bg-church overflow-hidden">
       <Container className="grid items-center gap-12 pt-32 pb-16 sm:pt-40 lg:grid-cols-[1fr_0.75fr] lg:gap-16 lg:pb-20">
         <div>
-          <Kicker>{kicker}</Kicker>
-          <h1 className="mt-6 font-heading text-4xl font-semibold leading-[1.05] tracking-tight text-ivory sm:text-5xl lg:text-6xl">{title}</h1>
-          {intro && <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">{intro}</p>}
+          <div className="hero-rise" style={{ animationDelay: '0.05s' }}><Kicker>{kicker}</Kicker></div>
+          <h1 className="mt-6 overflow-hidden pb-[0.08em] font-heading text-4xl font-semibold leading-[1.05] tracking-tight text-ivory sm:text-5xl lg:text-6xl">
+            <span className="hero-line block" style={{ animationDelay: '0.15s' }}>{title}</span>
+          </h1>
+          {intro && <p className="hero-rise mt-6 max-w-xl text-lg leading-relaxed text-white/75" style={{ animationDelay: '0.4s' }}>{intro}</p>}
           {/* <Scripture light className="mt-8 text-sm">{site.motto}</Scripture>S */}
         </div>
-        <Photo framed src={src} alt="" shot={shot} priority sizes="(min-width: 1024px) 35vw, 100vw" className="hidden w-full max-w-sm justify-self-end lg:block" />
+        {/* <Photo framed src={src} alt="" shot={shot} priority sizes="(min-width: 1024px) 35vw, 100vw" className="hidden w-full max-w-sm justify-self-end lg:block" /> */}
       </Container>
       <Kente />
     </section>
@@ -32,9 +35,9 @@ export function PageHero({ kicker, title, intro, shot, src }: { kicker: string; 
 /** The weekly schedule: day, gathering, time, in a scannable list. */
 export function ServiceTimes({ items, light = false }: { items: ScheduleItem[]; light?: boolean }) {
   return (
-    <ul className={`divide-y ${light ? 'divide-white/10 border-y border-white/10' : 'divide-brand-950/10 border-y border-brand-950/10'}`}>
+    <Stagger as="ul" gap={0.1} className={`divide-y ${light ? 'divide-white/10 border-y border-white/10' : 'divide-brand-950/10 border-y border-brand-950/10'}`}>
       {items.map((s) => (
-        <li key={`${s.day}-${s.name}`} className="grid grid-cols-[3.75rem_1fr] sm:grid-cols-[4.75rem_1fr_auto] items-center gap-x-5 gap-y-1 py-5">
+        <StaggerItem as="li" from="right" key={`${s.day}-${s.name}`} className="grid grid-cols-[3.75rem_1fr] sm:grid-cols-[4.75rem_1fr_auto] items-center gap-x-5 gap-y-1 py-5">
           <span className="row-span-2 sm:row-span-1 flex h-12 w-14 items-center justify-center rounded-sm bg-crimson-600 font-display text-sm font-extrabold tracking-[0.15em] text-white">{s.day}</span>
           <span>
             <span className={`block font-heading text-xl font-semibold ${light ? 'text-ivory' : 'text-brand-950'}`}>{s.name}</span>
@@ -43,9 +46,9 @@ export function ServiceTimes({ items, light = false }: { items: ScheduleItem[]; 
             </span>
           </span>
           <span className={`col-start-2 sm:col-start-3 font-display text-base font-bold tabular-nums ${light ? 'text-gold-300' : 'text-gold-700'}`}>{s.time}</span>
-        </li>
+        </StaggerItem>
       ))}
-    </ul>
+    </Stagger>
   );
 }
 
@@ -228,9 +231,11 @@ export function PhotoBanner({ kicker, title, intro, src }: { kicker: string; tit
       <div aria-hidden="true" className="hero-photo absolute inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: `url(${src}), url(${HERO_IMAGE})` }} />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-linear-to-r from-brand-950/90 via-brand-950/60 to-brand-950/25" />
       <Container className="pt-36 pb-16 sm:pt-44 sm:pb-24">
-        <Kicker>{kicker}</Kicker>
-        <h1 className="mt-6 font-heading text-5xl font-semibold leading-[1.02] tracking-tight text-ivory sm:text-6xl lg:text-7xl">{title}</h1>
-        {intro && <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">{intro}</p>}
+        <div className="hero-rise" style={{ animationDelay: '0.1s' }}><Kicker>{kicker}</Kicker></div>
+        <h1 className="mt-6 overflow-hidden pb-[0.08em] font-heading text-5xl font-semibold leading-[1.02] tracking-tight text-ivory sm:text-6xl lg:text-7xl">
+          <span className="hero-line block" style={{ animationDelay: '0.2s' }}>{title}</span>
+        </h1>
+        {intro && <p className="hero-rise mt-6 max-w-xl text-lg leading-relaxed text-white/80" style={{ animationDelay: '0.45s' }}>{intro}</p>}
       </Container>
       <Kente />
     </section>
@@ -256,16 +261,22 @@ export function AnchorVerse() {
   return (
     <section className="bg-ivory">
       <Container className="py-20 sm:py-28">
-        <figure className="mx-auto max-w-4xl text-center">
-          <Kicker>Our anchor scripture</Kicker>
+        <Stagger as="figure" gap={0.18} className="mx-auto max-w-4xl text-center">
+          <StaggerItem from="zoom"><Kicker>Our anchor scripture</Kicker></StaggerItem>
           <blockquote className="relative mt-10">
-            <span aria-hidden="true" className="absolute -top-10 left-1/2 -translate-x-1/2 font-heading text-[7rem] leading-none text-gold-400/60 select-none">&ldquo;</span>
-            <p className="relative font-serif text-2xl italic leading-[1.6] text-brand-950 sm:text-[2rem] sm:leading-[1.55]">{v.text}</p>
+            <StaggerItem from="zoom" className="absolute -top-10 left-1/2 -translate-x-1/2">
+              <span aria-hidden="true" className="block font-heading text-[7rem] leading-none text-gold-400/60 select-none">&ldquo;</span>
+            </StaggerItem>
+            <StaggerItem from="blur">
+              <p className="relative font-serif text-2xl italic leading-[1.6] text-brand-950 sm:text-[2rem] sm:leading-[1.55]">{v.text}</p>
+            </StaggerItem>
           </blockquote>
-          <figcaption className="mt-8 font-display text-[13px] font-bold uppercase tracking-[0.2em] text-crimson-700">
-            {v.reference} <span className="text-ink/40">({v.translation})</span>
-          </figcaption>
-        </figure>
+          <StaggerItem>
+            <figcaption className="mt-8 font-display text-[13px] font-bold uppercase tracking-[0.2em] text-crimson-700">
+              {v.reference} <span className="text-ink/40">({v.translation})</span>
+            </figcaption>
+          </StaggerItem>
+        </Stagger>
       </Container>
     </section>
   );

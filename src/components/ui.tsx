@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ComponentProps, ReactNode } from 'react';
+import { Stagger, StaggerItem } from './motion';
 
 // ─── Logo ─────────────────────────────────────────────────────────────────────
 
@@ -119,14 +120,18 @@ export function SectionHeading({
   light?: boolean;
   center?: boolean;
 }) {
+  // Arrives in turn as it scrolls into view: the label slides in, the title
+  // comes into focus, the intro rises.
   return (
-    <div className={`max-w-2xl ${center ? 'mx-auto text-center' : ''}`}>
-      <Kicker>{kicker}</Kicker>
-      <h2 className={`mt-5 font-heading text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl ${light ? 'text-ivory' : 'text-brand-950'}`}>
-        {title}
-      </h2>
-      {intro && <p className={`mt-5 text-lg leading-relaxed ${light ? 'text-white/75' : 'text-ink/70'}`}>{intro}</p>}
-    </div>
+    <Stagger className={`max-w-2xl ${center ? 'mx-auto text-center' : ''}`} gap={0.12}>
+      <StaggerItem from={center ? 'zoom' : 'left'}><Kicker>{kicker}</Kicker></StaggerItem>
+      <StaggerItem from="blur">
+        <h2 className={`mt-5 font-heading text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl ${light ? 'text-ivory' : 'text-brand-950'}`}>
+          {title}
+        </h2>
+      </StaggerItem>
+      {intro && <StaggerItem><p className={`mt-5 text-lg leading-relaxed ${light ? 'text-white/75' : 'text-ink/70'}`}>{intro}</p></StaggerItem>}
+    </Stagger>
   );
 }
 
