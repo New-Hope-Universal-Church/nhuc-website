@@ -58,7 +58,7 @@ export default function SermonLibrary({ sermons }: { sermons: LibrarySermon[] })
       </div>
 
       {allSeries.length > 0 && (
-        <div role="group" aria-label="Series" className="mt-5 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center [scrollbar-width:none]">
+        <div role="group" aria-label="Series" className="mt-5 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center scrollbar-none">
           <button type="button" aria-pressed={!series} onClick={() => pick(null)} className={chip(!series)}>All</button>
           {allSeries.map((s) => (
             <button key={s} type="button" aria-pressed={series === s} onClick={() => pick(series === s ? null : s)} className={chip(series === s)}>{s}</button>
