@@ -8,7 +8,7 @@ import SocialLinks, { hasSocials } from '@/components/SocialLinks';
 
 export const metadata: Metadata = {
   title: 'Visit us',
-  description: `Service times, directions and how to reach ${site.name}, ${site.address.line1}, ${site.address.city}.`,
+  description: `Times of service, directions and how to reach ${site.name}, ${site.address.line1}, ${site.address.city}.`,
 };
 
 const EXPECT = [
@@ -30,7 +30,7 @@ export default async function VisitPage() {
 
       <section className="py-24 sm:py-32">
         <Container className="grid gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
-          <SectionHeading kicker="When" title="Service times" intro="Arrive a few minutes early so we can welcome you properly." />
+          <SectionHeading kicker="When" title="Times of service" intro="Arrive a few minutes early so we can welcome you properly." />
           {schedule.length ? <ServiceTimes items={schedule} /> : <p className="self-center text-lg text-ink/60">Service times will be listed here soon. Ask any usher, or call the church office.</p>}
         </Container>
       </section>
