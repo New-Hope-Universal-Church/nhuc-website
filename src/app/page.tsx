@@ -76,7 +76,7 @@ export default async function HomePage() {
           </div>
           <Reveal delay={0.3} className="lg:col-start-1 lg:row-start-2">
             <div className="flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/visit" variant="dark">Plan your visit</ButtonLink>
+              <ButtonLink href="/visit" variant="gold">Plan your visit</ButtonLink>
               <ButtonLink href={site.address.mapsUrl} target="_blank" rel="noreferrer" variant="outline-dark">Get directions</ButtonLink>
             </div>
           </Reveal>
